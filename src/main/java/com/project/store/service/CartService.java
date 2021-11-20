@@ -2,6 +2,10 @@ package com.project.store.service;
 
 import com.project.store.entity.Cart;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.project.store.entity.Product;
+import io.swagger.models.auth.In;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CartService extends IService<Cart> {
 
+    List<Product> findAllCartByUserId(Integer id);
 }
