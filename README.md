@@ -5,7 +5,7 @@ To construct the running enviroment, install **MySQL** and **Redis**.
 
 First create database **mmall** in mysql, and running the **mmall.sql** to create tables.
 
-The configure file is at src/main/resources/application.yml. You can change the password as your own password.
+The configuration file is at src/main/resources/application.yml. You can change the password as your own password.
 ```
 spring:
   datasource:
@@ -15,5 +15,5 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-Run the StoreApplication.java to start the service. 
+Run the **StoreApplication.java** to start the service. 
 And the API document is at http://localhost:8181/swagger-ui.html# by defalut.
