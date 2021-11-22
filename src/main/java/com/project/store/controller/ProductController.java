@@ -49,7 +49,7 @@ public class ProductController {
         return productService.findByCategoryId(level, id);
     }
 
-    @ApiOperation(value = "获取商品详情")
+    @ApiOperation(value = "根据id获取商品详情")
     @GetMapping("/findById/{id}")
     public Product findById(@PathVariable Integer id) {
         return productService.getById(id);

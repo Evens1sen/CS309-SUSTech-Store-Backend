@@ -9,10 +9,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Objects;
 
 /**
  * <p>
@@ -24,6 +28,7 @@ import javax.servlet.http.HttpSession;
  */
 
 @Api(tags = "UserController")
+@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -33,58 +38,69 @@ public class UserController {
 
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
-    public String register(@Validated @RequestBody UserRegisterParam userRegisterParam) {
+    //FIXME: bugs in validation
+    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam, BindingResult bindingResult) {
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            return error.getDefaultMessage();
+        }
+
         User user = new User();
-        user.setUserName(userRegisterParam.getUserName());
+        user.setUid(userRegisterParam.getUid());
         user.setPassword(userRegisterParam.getPassword());
         user.setNickName(userRegisterParam.getNickName());
         user.setEmail(userRegisterParam.getEmail());
 
-        boolean result = false;
+        boolean result;
         try {
             result = userService.save(user);
         } catch (Exception e) {
-            return "register";
+            return "uid或昵称已存在";
         }
+
         if (result) {
-            return "login";
+            return "注册成功";
         }
-        return "register";
+        return "注册失败";
     }
 
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
+    //FIXME: Salt hash the password
     public String login(@Validated @RequestBody UserLoginParam userLoginParam, HttpSession session) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_name", userLoginParam.getUserName());
-        wrapper.eq("password", userLoginParam.getPassword());
+        wrapper.eq("uid", userLoginParam.getUid());
         User user = userService.getOne(wrapper);
         if (user == null) {
-            return "false";
+            return "请先注册账号";
+        }
+        if (!Objects.equals(user.getPassword(), userLoginParam.getPassword())) {
+            return "密码错误";
         }
 
         session.setAttribute("user", user);
-        return "success";
+        return "登录成功";
     }
 
     @ApiOperation(value = "登出", notes = "")
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "login";
+        return "登出成功";
     }
 
-    @ApiOperation(value = "获取用户详细信息", notes = "根据用户名来获取用户详细信息")
-    @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String")
-    @GetMapping("getUser/{userName}")
-    public User getAUser(@PathVariable("userName") String userName) {
+    @ApiOperation(value = "获取用户详细信息", notes = "根据uid来获取用户详细信息")
+    @ApiImplicitParam(name = "uid", value = "用户id", required = true, dataType = "int")
+    @GetMapping("/findById/{uid}")
+    public User findById(@PathVariable("uid") Integer uid) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_name", userName);
-        User user = userService.getOne(wrapper);
-        if (user == null) {
-            return null;
-        }
-        return user;
+        wrapper.eq("uid", uid);
+        return userService.getOne(wrapper);
+    }
+
+    @ApiOperation(value = "获取当前登录用户信息")
+    @GetMapping("/userInfo")
+    public User userInfo(HttpSession session) {
+        return (User) session.getAttribute("user");
     }
 }
 

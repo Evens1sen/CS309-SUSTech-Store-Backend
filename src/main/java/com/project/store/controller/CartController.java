@@ -35,15 +35,15 @@ public class CartController {
         Cart cart = new Cart();
         cart.setProductId(productId);
         User user = (User) session.getAttribute("user");
-        cart.setUserId(user.getId());
+        cart.setUserId(user.getUid());
         return cartService.save(cart);
     }
 
     @ApiOperation(value = "获取收藏列表")
-    @GetMapping("/cartList")
-    public List<Product> findAllCart(HttpSession session) {
+    @GetMapping("/findAll")
+    public List<Product> findAll(HttpSession session) {
         User user = (User) session.getAttribute("user");
-        return cartService.findAllCartByUserId(user.getId());
+        return cartService.findAllCartByUserId(user.getUid());
     }
 
     @ApiOperation(value = "根据收藏id删除收藏")
