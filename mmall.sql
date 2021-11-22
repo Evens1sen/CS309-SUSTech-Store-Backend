@@ -70,7 +70,7 @@ CREATE TABLE `orders`
     `product_id`   int      NOT NULL COMMENT '商品主键' REFERENCES product (id),
     `cost`         float             DEFAULT NULL COMMENT '总金额',
     `serialnumber` varchar(255)      DEFAULT NULL COMMENT '订单号',
-    `closed`       int      NOT NULL DEFAULT 0 COMMENT '交易完成1否则0',
+    `status`       int      NOT NULL DEFAULT 0 COMMENT '订单状态',
     `create_time`  datetime          DEFAULT NULL COMMENT '创建时间',
     `update_time`  datetime NOT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`)
