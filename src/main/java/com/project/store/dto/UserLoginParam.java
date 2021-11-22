@@ -7,9 +7,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UserLoginParam {
-    @NotNull(message = "用户名不能为空")
-    @ApiModelProperty(value = "用户名", required = true)
-    private String userName;
+    @NotNull(message = "uid不能为空")
+    @ApiModelProperty(value = "uid", required = true)
+    private Integer uid;
 
     @NotNull(message = "密码不能为空")
     @ApiModelProperty(value = "密码", required = true)

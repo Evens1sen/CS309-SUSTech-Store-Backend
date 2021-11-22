@@ -45,10 +45,12 @@ public class Product implements Serializable {
      */
     private Float price;
 
+    private Integer ownerId;
+
     /**
      * 库存
      */
-    private Integer stock;
+//    private Integer stock;
 
     /**
      * 分类1

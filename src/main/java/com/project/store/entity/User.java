@@ -1,18 +1,14 @@
 package com.project.store.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -32,13 +28,10 @@ public class User implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "uid")
+    private Integer uid;
 
-    /**
-     * 用户名
-     */
-    private String userName;
+    //private String userName;
 
     /**
      * 昵称
@@ -66,6 +59,10 @@ public class User implements Serializable {
     private String mobile;
 
     private String icon;
+
+    private float balance;
+
+    private int credit;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
