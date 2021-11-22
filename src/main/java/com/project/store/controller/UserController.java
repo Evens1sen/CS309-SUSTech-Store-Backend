@@ -102,6 +102,25 @@ public class UserController {
     public User userInfo(HttpSession session) {
         return (User) session.getAttribute("user");
     }
+
+    @ApiOperation(value = "为当前用户充值")
+    @PutMapping("/addBalance/{amount}")
+    public boolean addBalance(@PathVariable Float amount, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        user.setBalance(user.getBalance() + amount);
+        return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation(value = "为当前用户提现")
+    @PutMapping("/withdraw/{amount}")
+    public boolean withdraw(@PathVariable Float amount, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user.getBalance() - amount < 0) {
+            return false;
+        }
+        user.setBalance(user.getBalance() - amount);
+        return userService.saveOrUpdate(user);
+    }
 }
 
 

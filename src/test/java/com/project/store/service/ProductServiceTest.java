@@ -17,6 +17,7 @@ class ProductServiceTest {
 
     @Test
     void test() {
-        productService.list().forEach(System.out::println);
+        System.out.println(productService.findProductVOById(733));
+        System.out.println();
     }
 }

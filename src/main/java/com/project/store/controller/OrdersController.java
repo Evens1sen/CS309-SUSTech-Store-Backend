@@ -2,11 +2,13 @@ package com.project.store.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.service.OrdersService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,24 +32,39 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
+    //FIXME: add more restrictions on orders, and money
+    @ApiOperation(value = "添加订单，订单状态为0")
     @PostMapping("/add/{useAddress}")
     public boolean add(@RequestBody Product product, @PathVariable String useAddress, HttpSession session) {
         User user = (User) session.getAttribute("user");
         return ordersService.save(product, useAddress, user);
     }
 
-    //FIXME
-    @DeleteMapping("/deleteById/{id}")
-    public boolean deleteById(@PathVariable Integer id){
-        return false;
-    }
+//    @ApiOperation(value = "支付订单，订单状态改变为1")
+//    public boolean pay() {
+//        return false;
+//    }
+//
+//    @ApiOperation(value = "关闭订单，订单状态改变为2")
+//    @PutMapping("close/{id}")
+//    public boolean closeById(@PathVariable Integer id) {
+//        QueryWrapper wrapper = new QueryWrapper();
+//        wrapper.eq("id", id);
+//        Orders orders = ordersService.getById(id);
+//        if (orders.getStatus() == 0) {
+//            UpdateWrapper wrapper1 = new UpdateWrapper();
+//            wrapper1.set("status", 2);
+//            wrapper1.eq("id", id);
+//            return ordersService.update(wrapper);
+//        }
+//
+//        return false;
+//    }
 
-    @PutMapping("close/{id}")
-    public boolean closeById(@PathVariable Integer id){
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("id", id);
-        ordersService.update(wrapper);
-        return false;
+    @ApiOperation(value = "彻底删除订单")
+    @DeleteMapping("/deleteById/{id}")
+    public boolean deleteById(@PathVariable Integer id) {
+        return ordersService.removeById(id);
     }
 
     @ApiOperation(value = "获取当前登录用户所有购买订单")
