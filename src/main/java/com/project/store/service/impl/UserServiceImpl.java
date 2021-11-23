@@ -23,13 +23,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
 
     @Override
-    public boolean payByOwnerId(Integer buyerId, Integer ownerId, Float price) {
+    public boolean pay(Integer buyerId, Float price) {
         User buyer = userMapper.selectById(buyerId);
-        User owner = userMapper.selectById(ownerId);
+        if (buyer.getBalance() - price < 0) {
+            return false;
+        }
         buyer.setBalance(buyer.getBalance() - price);
-        owner.setBalance(owner.getBalance() + price);
         userMapper.updateById(buyer);
-        userMapper.updateById(owner);
         return true;
     }
 }
