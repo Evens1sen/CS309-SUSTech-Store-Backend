@@ -34,7 +34,7 @@ public class CartController {
     private UserService userService;
 
     @ApiOperation(value = "加入收藏夹")
-    @GetMapping("/addCart/{productId}")
+    @PostMapping("/addCart/{productId}")
     public boolean addCart(@PathVariable Integer productId) {
         Cart cart = new Cart();
         cart.setProductId(productId);

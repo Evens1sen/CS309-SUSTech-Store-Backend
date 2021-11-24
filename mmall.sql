@@ -413,6 +413,26 @@ VALUES (11, 10, '北京市海淀区大有庄', '朋友家', 0, '2019-06-03 02:32
 /*!40000 ALTER TABLE `user_address`
     ENABLE KEYS */;
 UNLOCK TABLES;
+
+drop table if exists user_chat;
+create table user_chat
+(
+    id        bigint auto_increment,
+    buy_id    int          not null,
+    sell_id   int          not null,
+    line_text varchar(255) not null,
+    create_at datetime     not null comment '时间',
+    constraint user_chat_pk
+        primary key (id),
+    foreign key (buy_id) references user (uid),
+    foreign key (sell_id) references user (uid)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+insert into user_chat value (1, 11911001, 11911002, 'sdasdafd', CURRENT_TIMESTAMP);
+insert into user_chat value (2, 11911001, 11911003, 'sdasdafd', CURRENT_TIMESTAMP);
+
+
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
