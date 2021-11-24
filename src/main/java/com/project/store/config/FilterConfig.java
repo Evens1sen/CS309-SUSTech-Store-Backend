@@ -15,7 +15,7 @@ public class FilterConfig {
         FilterRegistrationBean filterRegistrationBean1 = new FilterRegistrationBean();
         filterRegistrationBean1.setFilter(new UserFilter());
         filterRegistrationBean1.addUrlPatterns("/cart/*", "/orders/*", "/user/userInfo", "/userAddress/*");
-        filterRegistrationBean1.setOrder(2);
+        filterRegistrationBean1.setOrder(0);
         return filterRegistrationBean1;
     }
 

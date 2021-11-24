@@ -4,10 +4,13 @@ import com.project.store.entity.Orders;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
+import com.project.store.vo.OrdersVO;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * <p>
@@ -20,4 +23,8 @@ import javax.servlet.http.HttpSession;
 public interface OrdersService extends IService<Orders> {
 
     boolean save(@RequestBody Product product, @PathVariable String useAddress, User user);
+
+    List<OrdersVO> findAllOrdersVOByBuyerID(Integer buyerId);
+
+    List<OrdersVO> findAllOrdersVOByOwnerID(Integer ownerId);
 }

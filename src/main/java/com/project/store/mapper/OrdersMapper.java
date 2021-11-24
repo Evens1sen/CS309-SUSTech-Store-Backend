@@ -2,7 +2,11 @@ package com.project.store.mapper;
 
 import com.project.store.entity.Orders;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.project.store.vo.OrdersVO;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +18,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OrdersMapper extends BaseMapper<Orders> {
-
 }
