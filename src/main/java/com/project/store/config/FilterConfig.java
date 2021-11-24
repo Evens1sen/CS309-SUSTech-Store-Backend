@@ -15,7 +15,7 @@ public class FilterConfig {
         FilterRegistrationBean filterRegistrationBean1 = new FilterRegistrationBean();
         filterRegistrationBean1.setFilter(new UserFilter());
         filterRegistrationBean1.addUrlPatterns("/cart/*", "/orders/*", "/user/userInfo", "/userAddress/*");
-        filterRegistrationBean1.setOrder(0);
+        filterRegistrationBean1.setOrder(1);
         return filterRegistrationBean1;
     }
 
@@ -24,7 +24,7 @@ public class FilterConfig {
         FilterRegistrationBean filterRegistrationBean2 = new FilterRegistrationBean();
         filterRegistrationBean2.setFilter(new CrosFilter());
         filterRegistrationBean2.addUrlPatterns("*");
-        filterRegistrationBean2.setOrder(1);
+        filterRegistrationBean2.setOrder(0);
         return filterRegistrationBean2;
     }
 
