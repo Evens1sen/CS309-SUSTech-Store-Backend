@@ -1,6 +1,7 @@
 package com.project.store.controller;
 
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.project.store.entity.Orders;
@@ -13,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -39,16 +39,16 @@ public class OrdersController {
     //FIXME: Add more restrictions on orders, and money
     @ApiOperation(value = "用户添加订单，订单状态为0")
     @PostMapping("/add/{useAddress}")
-    public boolean add(@RequestBody Product product, @PathVariable String useAddress, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public boolean add(@RequestBody Product product, @PathVariable String useAddress) {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         return ordersService.save(product, useAddress, user);
     }
 
     //FIXME: Add more restrictions on the users
     @ApiOperation(value = "用户支付订单，订单状态改变为1", notes = "仅对用户扣款")
     @PutMapping("/payById/{id}")
-    public boolean payById(@PathVariable String id, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public boolean payById(@PathVariable String id) {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         Orders orders = ordersService.getById(id);
         boolean result = userService.pay(user.getUid(), orders.getCost());
         if (!result) {
@@ -97,8 +97,8 @@ public class OrdersController {
 
     @ApiOperation(value = "获取当前登录用户所有购买订单")
     @GetMapping("/listBuy")
-    public List<Orders> listBuy(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public List<Orders> listBuy() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("buyer_id", user.getUid());
         ordersService.list();
@@ -107,8 +107,8 @@ public class OrdersController {
 
     @ApiOperation(value = "获取当前登录用户所有卖出订单")
     @GetMapping("/listSell")
-    public List<Orders> listSell(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public List<Orders> listSell() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("owner_id", user.getUid());
         ordersService.list();

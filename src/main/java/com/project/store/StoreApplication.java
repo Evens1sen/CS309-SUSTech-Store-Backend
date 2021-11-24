@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @SpringBootApplication
 @MapperScan("com/project/store/mapper")
-@ServletComponentScan
+//@ServletComponentScan
 public class StoreApplication {
 
     public static void main(String[] args) {

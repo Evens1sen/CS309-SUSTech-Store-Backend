@@ -64,16 +64,19 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders`
 (
     `id`           int      NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `buyer_id`     int               DEFAULT NULL COMMENT '买家id' REFERENCES user (uid),
-    `owner_id`     int               DEFAULT NULL COMMENT '卖家id' REFERENCES user (uid),
-    `user_address` varchar(255)      DEFAULT NULL COMMENT '用户地址' REFERENCES user_address (address),
+    `buyer_id`     int               DEFAULT NULL COMMENT '买家id',
+    `owner_id`     int               DEFAULT NULL COMMENT '卖家id',
+    `user_address` varchar(255)      DEFAULT NULL COMMENT '用户地址',
     `product_id`   int      NOT NULL COMMENT '商品主键' REFERENCES product (id),
     `cost`         float             DEFAULT NULL COMMENT '总金额',
     `serialnumber` varchar(255)      DEFAULT NULL COMMENT '订单号',
     `status`       int      NOT NULL DEFAULT 0 COMMENT '订单状态',
     `create_time`  datetime          DEFAULT NULL COMMENT '创建时间',
     `update_time`  datetime NOT NULL COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `buyer_idfk` FOREIGN KEY (buyer_id) REFERENCES user (uid),
+    CONSTRAINT `owner_idfk` FOREIGN KEY (owner_id) REFERENCES user (uid)
+#     CONSTRAINT `addressfk` FOREIGN KEY (user_address) REFERENCES user_address (address)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 118
   DEFAULT CHARSET = utf8;
@@ -223,13 +226,22 @@ VALUES (733, '香奈儿', '', 152, 11912919, 548, 654, 655, 'baby_1.jpg', '2021-
        (774, '香水4', '', 100, 11912919, 548, 654, 655, 'pro3.jpg', '2021-11-22 21:00:00', '2021-11-22 21:00:00'),
        (775, '香水5', '', 100, 11912919, 548, 654, 655, 'pro4.jpg', '2021-11-22 21:00:00', '2021-11-22 21:00:00'),
        (776, '香水6', '', 1, 11912919, 548, 654, 655, 'pro5.jpg', '2021-11-22 21:00:00', '2021-11-22 21:00:00');
-update product set categorylevelone_id = 1;
-update product set categorylevelone_id = 2 where id > 760;
-update product set categorylevelone_id = 3 where id between 750 and 760;
-update product set categorylevelone_id = 4 where id between 740 and 750;
-update product set categoryleveltwo_id = 0;
-update product set categorylevelthree_id = 0;
-    /*!40000 ALTER TABLE `product`
+update product
+set categorylevelone_id = 1;
+update product
+set categorylevelone_id = 2
+where id > 760;
+update product
+set categorylevelone_id = 3
+where id between 750 and 760;
+update product
+set categorylevelone_id = 4
+where id between 740 and 750;
+update product
+set categoryleveltwo_id = 0;
+update product
+set categorylevelthree_id = 0;
+/*!40000 ALTER TABLE `product`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,8 +363,8 @@ VALUES (11911001, 'admin', '123123', 0, 'hello11@bdqn.com', '1583233515', '7.jpg
        (11911004, 'ck', '123', 1, '1044732267@qq.com', '13366055010', '4.jpg', 0, 100,
         '2020-05-18 06:22:36', '2020-05-18 06:22:38');
 INSERT INTO `user`
-VALUE (11912919, 'mhy', '123', 1, '11912919@mail.sustech.edu.cn', '13366055010', '0.jpg', 648, 100,
-       '2021-11-23 06:22:36', '2021-11-23 06:22:36');
+    VALUE (11912919, 'mhy', '123', 1, '11912919@mail.sustech.edu.cn', '13366055010', '0.jpg', 648, 100,
+           '2021-11-23 06:22:36', '2021-11-23 06:22:36');
 /*!40000 ALTER TABLE `user`
     ENABLE KEYS */;
 UNLOCK TABLES;
