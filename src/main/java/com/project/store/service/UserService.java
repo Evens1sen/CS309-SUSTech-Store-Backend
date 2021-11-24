@@ -11,7 +11,7 @@ import java.security.GeneralSecurityException;
  * </p>
  *
  * @author ${author}
- * @since 2021-11-19
+ * @since 2021-11-24
  */
 public interface UserService extends IService<User> {
 
@@ -22,4 +22,5 @@ public interface UserService extends IService<User> {
     String sendVerification(String email) throws GeneralSecurityException;//验证码
 
     boolean pay(Integer buyerId, Float price);
+
 }
