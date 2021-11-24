@@ -35,7 +35,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //FIXME: Make Common result
     //FIXME: Verification code
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
@@ -90,7 +89,6 @@ public class UserController {
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
     //FIXME: Salt hash the password
-    //FIXME: Add the common result
     public Result<SaTokenInfo> login(@Valid @RequestBody UserLoginParam userLoginParam) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uid", userLoginParam.getUid());

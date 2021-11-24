@@ -1,8 +1,11 @@
 package com.project.store.controller;
 
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.project.store.entity.Product;
+import com.project.store.entity.User;
 import com.project.store.service.ProductService;
+import com.project.store.service.UserService;
 import com.project.store.vo.ProductVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,6 +31,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
 
     @ApiOperation("获取所有商品列表")
     @GetMapping("/list")
@@ -72,6 +78,8 @@ public class ProductController {
     @ApiOperation(value = "添加商品")
     @PostMapping("/add")
     public boolean add(@RequestBody Product product) {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        product.setOwnerId(user.getUid());
         return productService.save(product);
     }
 
