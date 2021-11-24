@@ -1,28 +1,28 @@
 package com.project.store.dto;
 
-/**
- * 枚举了一些常用API操作码
- * Created by macro on 2019/4/19.
- */
-public enum ResultCode implements IErrorCode {
-    SUCCESS(200, "操作成功"),
-    FAILED(500, "操作失败"),
-    VALIDATE_FAILED(404, "参数检验失败"),
-    UNAUTHORIZED(401, "暂未登录或token已经过期"),
-    FORBIDDEN(403, "没有相关权限");
-    private long code;
-    private String message;
+import lombok.Getter;
 
-    private ResultCode(long code, String message) {
+@Getter
+public enum ResultCode {
+
+    SUCCESS(1000, "操作成功"),
+
+    FAILED(1001, "响应失败"),
+
+    VALIDATE_FAILED(1002, "参数校验失败"),
+
+    UNREGISTERED(1003, "未注册账号"),
+
+    WRONG_PASSWORD(1004, "密码错误"),
+
+    ERROR(5000, "未知错误");
+
+    private int code;
+    private String msg;
+
+    ResultCode(int code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
-    public long getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

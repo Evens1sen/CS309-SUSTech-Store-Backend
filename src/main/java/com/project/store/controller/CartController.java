@@ -7,6 +7,8 @@ import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.service.CartService;
 import com.project.store.service.UserService;
+import com.project.store.vo.CartVO;
+import com.project.store.vo.ProductVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,13 @@ public class CartController {
     public List<Product> findAll() {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         return cartService.findAllCartByUserId(user.getUid());
+    }
+
+    @ApiOperation(value = "获取收藏商品VO列表")
+    @GetMapping("/findAllCartVO")
+    public List<CartVO> findAllCartVO() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        return cartService.findAllCartVOByUserId(user.getUid());
     }
 
     @ApiOperation(value = "根据收藏id删除收藏")

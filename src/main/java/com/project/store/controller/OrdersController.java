@@ -8,7 +8,9 @@ import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.service.OrdersService;
+import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
+import com.project.store.vo.OrdersVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +34,18 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private UserService userService;
 
     //FIXME: Add more restrictions on orders, and money
     @ApiOperation(value = "用户添加订单，订单状态为0")
-    @PostMapping("/add/{useAddress}")
-    public boolean add(@RequestBody Product product, @PathVariable String useAddress) {
+    @PostMapping("/add/{productId}/{useAddress}")
+    public boolean add(@PathVariable Integer productId, @PathVariable String useAddress) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
+        Product product = productService.getById(productId);
         return ordersService.save(product, useAddress, user);
     }
 
@@ -101,8 +106,14 @@ public class OrdersController {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("buyer_id", user.getUid());
-        ordersService.list();
         return ordersService.list(wrapper);
+    }
+
+    @ApiOperation(value = "获取当前登录用户所有购买订单VO")
+    @GetMapping("/listBuyVO")
+    public List<OrdersVO> listBuyVO() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        return ordersService.findAllOrdersVOByBuyerID(user.getUid());
     }
 
     @ApiOperation(value = "获取当前登录用户所有卖出订单")
@@ -111,8 +122,14 @@ public class OrdersController {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("owner_id", user.getUid());
-        ordersService.list();
         return ordersService.list(wrapper);
+    }
+
+    @ApiOperation(value = "获取当前登录用户所有卖出订单VO")
+    @GetMapping("/listSellVO")
+    public List<OrdersVO> listSellVO() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        return ordersService.findAllOrdersVOByOwnerID(user.getUid());
     }
 }
 

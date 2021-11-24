@@ -3,6 +3,8 @@ package com.project.store.controller;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.project.store.dto.Result;
+import com.project.store.dto.ResultCode;
 import com.project.store.dto.UserLoginParam;
 import com.project.store.dto.UserRegisterParam;
 import com.project.store.entity.User;
@@ -33,9 +35,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //FIXME: Make Common result
+    //FIXME: Verification code
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
-    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
+    public Result<String> register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
         User user = new User();
         user.setUid(userRegisterParam.getUid());
         user.setPassword(userRegisterParam.getPassword());
@@ -46,35 +50,60 @@ public class UserController {
         try {
             result = userService.save(user);
         } catch (Exception e) {
-            return "uid或昵称已存在";
+            return new Result<>(ResultCode.FAILED, "uid或昵称已存在");
         }
 
         if (result) {
-            return "注册成功";
+            return new Result<>(ResultCode.SUCCESS, "注册成功");
         }
-        return "注册失败";
+        return new Result<>(ResultCode.FAILED, "注册失败");
     }
+
+//    @ApiOperation(value = "校验注册参数", notes = "")
+//    @PostMapping("/registerValidate")
+//    public String registerValidate(@Valid @RequestBody UserRegisterParam userRegisterParam) {
+//        User user = new User();
+//        user.setUid(userRegisterParam.getUid());
+//        user.setPassword(userRegisterParam.getPassword());
+//        user.setNickName(userRegisterParam.getNickName());
+//        user.setEmail(userRegisterParam.getEmail());
+//
+//        boolean result;
+//        try {
+//            result = userService.save(user);
+//        } catch (Exception e) {
+//            return "uid或昵称已存在";
+//        }
+//
+//        if (result) {
+//            return "注册成功";
+//        }
+//        return "注册失败";
+//    }
+//
+//    @ApiOperation(value = "校验验证码")
+//    @PostMapping("/verifyEmail/{code}")
+//    public boolean verifyEmail(@PathVariable String code, String sendCode) {
+//        return Objects.equals(code, sendCode);
+//    }
 
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
     //FIXME: Salt hash the password
     //FIXME: Add the common result
-    public SaTokenInfo login(@Valid @RequestBody UserLoginParam userLoginParam) {
+    public Result<SaTokenInfo> login(@Valid @RequestBody UserLoginParam userLoginParam) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uid", userLoginParam.getUid());
         User user = userService.getOne(wrapper);
         if (user == null) {
-//            return "请先注册账号";
-            return null;
+            return new Result<>(ResultCode.UNREGISTERED, null);
         }
         if (!Objects.equals(user.getPassword(), userLoginParam.getPassword())) {
-//            return "密码错误";
-            return null;
+            return new Result<>(ResultCode.WRONG_PASSWORD, null);
         }
 
         StpUtil.login(user.getUid());
-//        return "登录成功";
-        return StpUtil.getTokenInfo();
+        return new Result<>(StpUtil.getTokenInfo());
     }
 
     @ApiOperation(value = "登出", notes = "")
