@@ -1,5 +1,7 @@
 package com.project.store.controller;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.project.store.dto.UserLoginParam;
 import com.project.store.dto.UserRegisterParam;
@@ -9,12 +11,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Objects;
 
@@ -28,7 +26,6 @@ import java.util.Objects;
  */
 
 @Api(tags = "UserController")
-@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -38,12 +35,7 @@ public class UserController {
 
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
-    //FIXME: bugs in validation
-    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam, BindingResult bindingResult) {
-        for (ObjectError error : bindingResult.getAllErrors()) {
-            return error.getDefaultMessage();
-        }
-
+    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
         User user = new User();
         user.setUid(userRegisterParam.getUid());
         user.setPassword(userRegisterParam.getPassword());
@@ -66,25 +58,29 @@ public class UserController {
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
     //FIXME: Salt hash the password
-    public String login(@Validated @RequestBody UserLoginParam userLoginParam, HttpSession session) {
+    //FIXME: Add the common result
+    public SaTokenInfo login(@Valid @RequestBody UserLoginParam userLoginParam) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uid", userLoginParam.getUid());
         User user = userService.getOne(wrapper);
         if (user == null) {
-            return "请先注册账号";
+//            return "请先注册账号";
+            return null;
         }
         if (!Objects.equals(user.getPassword(), userLoginParam.getPassword())) {
-            return "密码错误";
+//            return "密码错误";
+            return null;
         }
 
-        session.setAttribute("user", user);
-        return "登录成功";
+        StpUtil.login(user.getUid());
+//        return "登录成功";
+        return StpUtil.getTokenInfo();
     }
 
     @ApiOperation(value = "登出", notes = "")
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
+    public String logout() {
+        StpUtil.logout();
         return "登出成功";
     }
 
@@ -99,8 +95,27 @@ public class UserController {
 
     @ApiOperation(value = "获取当前登录用户信息")
     @GetMapping("/userInfo")
-    public User userInfo(HttpSession session) {
-        return (User) session.getAttribute("user");
+    public User userInfo() {
+        return userService.getById(StpUtil.getLoginIdAsInt());
+    }
+
+    @ApiOperation(value = "为当前用户充值")
+    @PutMapping("/addBalance/{amount}")
+    public boolean addBalance(@PathVariable Float amount) {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        user.setBalance(user.getBalance() + amount);
+        return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation(value = "为当前用户提现")
+    @PutMapping("/withdraw/{amount}")
+    public boolean withdraw(@PathVariable Float amount) {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        if (user.getBalance() - amount < 0) {
+            return false;
+        }
+        user.setBalance(user.getBalance() - amount);
+        return userService.saveOrUpdate(user);
     }
 }
 

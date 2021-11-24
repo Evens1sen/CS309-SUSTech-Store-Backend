@@ -3,6 +3,7 @@ package com.project.store.service;
 import com.project.store.entity.Product;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.project.store.mapper.ProductMapper;
+import com.project.store.vo.ProductVO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -17,5 +18,13 @@ import java.util.List;
  */
 public interface ProductService extends IService<Product> {
 
-    public List<Product> findByCategoryId(String level, Integer findByCategoryId);
+    List<Product> findByCategoryId(Integer level, Integer categoryId);
+
+    List<ProductVO> findProductVOByCategoryId(Integer level, Integer categoryId);
+
+    ProductVO findProductVOById(Integer id);
+
+    List<ProductVO> findAllProductVO();
+
+    List<ProductVO> searchAllProductVO(String key);
 }

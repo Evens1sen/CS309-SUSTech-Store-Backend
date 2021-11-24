@@ -1,16 +1,17 @@
 package com.project.store.controller;
 
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.project.store.entity.Cart;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.service.CartService;
+import com.project.store.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,20 +30,23 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     @ApiOperation(value = "加入收藏夹")
     @GetMapping("/addCart/{productId}")
-    public boolean addCart(@PathVariable Integer productId, HttpSession session) {
+    public boolean addCart(@PathVariable Integer productId) {
         Cart cart = new Cart();
         cart.setProductId(productId);
-        User user = (User) session.getAttribute("user");
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         cart.setUserId(user.getUid());
         return cartService.save(cart);
     }
 
     @ApiOperation(value = "获取收藏列表")
     @GetMapping("/findAll")
-    public List<Product> findAll(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public List<Product> findAll() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
         return cartService.findAllCartByUserId(user.getUid());
     }
 

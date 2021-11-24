@@ -15,12 +15,13 @@ import java.security.GeneralSecurityException;
  */
 public interface UserService extends IService<User> {
 
+
     boolean sendEmail(String email, String text) throws GeneralSecurityException;
 
     boolean sendNotification(String email) throws GeneralSecurityException;//提醒
 
     String sendVerification(String email) throws GeneralSecurityException;//验证码
 
-
+    boolean pay(Integer buyerId, Float price);
 
 }

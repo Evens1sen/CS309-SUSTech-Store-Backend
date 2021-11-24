@@ -1,4 +1,4 @@
-package com.project.store;
+package com.project.store.util;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;

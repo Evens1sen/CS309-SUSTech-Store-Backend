@@ -64,7 +64,7 @@ public class Orders implements Serializable {
      */
     private String serialnumber;
 
-    private Integer closed;
+    private Integer status;
 
     /**
      * 创建时间

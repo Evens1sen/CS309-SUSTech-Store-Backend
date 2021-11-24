@@ -17,6 +17,6 @@ class ProductServiceTest {
 
     @Test
     void test() {
-        productService.list().forEach(System.out::println);
+        productService.searchAllProductVO("香水").forEach(System.out::println);
     }
 }

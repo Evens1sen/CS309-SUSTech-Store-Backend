@@ -1,9 +1,12 @@
 package com.project.store.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -70,7 +73,11 @@ public class Product implements Serializable {
     /**
      * 文件名称
      */
-    private String fileName;
+    private String image;
 
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 }

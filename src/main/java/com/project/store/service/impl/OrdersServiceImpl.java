@@ -34,6 +34,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orders.setUserAddress(useAddress);
         orders.setProductId(product.getId());
         orders.setCost(product.getPrice());
+        orders.setStatus(0);
 
         String seriaNumber = null;
         try {

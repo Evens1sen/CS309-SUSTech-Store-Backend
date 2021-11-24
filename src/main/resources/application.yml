@@ -8,6 +8,7 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-enums-package: com.project.store.enums
 
 server:
   port: 8181

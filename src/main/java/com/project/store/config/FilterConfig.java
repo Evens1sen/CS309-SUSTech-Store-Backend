@@ -1,6 +1,7 @@
 package com.project.store.config;
 
 
+import com.project.store.filter.CrosFilter;
 import com.project.store.filter.UserFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +11,21 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new UserFilter());
-        filterRegistrationBean.addUrlPatterns("/cart/*", "/orders/*", "/user/userInfo", "/userAddress/*");
-        return filterRegistrationBean;
+    public FilterRegistrationBean filterRegistrationBean1() {
+        FilterRegistrationBean filterRegistrationBean1 = new FilterRegistrationBean();
+        filterRegistrationBean1.setFilter(new UserFilter());
+        filterRegistrationBean1.addUrlPatterns("/cart/*", "/orders/*", "/user/userInfo", "/userAddress/*");
+        filterRegistrationBean1.setOrder(2);
+        return filterRegistrationBean1;
     }
+
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean2() {
+        FilterRegistrationBean filterRegistrationBean2 = new FilterRegistrationBean();
+        filterRegistrationBean2.setFilter(new CrosFilter());
+        filterRegistrationBean2.addUrlPatterns("*");
+        filterRegistrationBean2.setOrder(1);
+        return filterRegistrationBean2;
+    }
+
 }
