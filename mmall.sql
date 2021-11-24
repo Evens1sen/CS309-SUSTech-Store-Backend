@@ -418,18 +418,22 @@ drop table if exists user_chat;
 
 create table user_chat
 (
-    id bigint auto_increment,
-    buy_id int not null references user(uid),
-    sell_id int not null references user(uid),
+    id        bigint auto_increment,
+    buy_id    int          not null,
+    sell_id   int          not null,
     line_text varchar(255) not null,
-    create_at datetime not null comment '时间',
+    create_at datetime     not null comment '时间',
     constraint user_chat_pk
-        primary key (id)
-)ENGINE = InnoDB
- DEFAULT CHARSET = utf8;
+        primary key (id),
+    foreign key (buy_id) references user (uid),
+    foreign key (sell_id) references user (uid)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
-insert into user_chat value (1,11912201,11912202,'sdasdafd',CURRENT_TIMESTAMP);
-insert into user_chat value (2,11912201,11912203,'sdasdafd',CURRENT_TIMESTAMP);
+insert into user_chat value (1, 11911001, 11911002, 'sdasdafd', CURRENT_TIMESTAMP);
+insert into user_chat value (2, 11911001, 11911003, 'sdasdafd', CURRENT_TIMESTAMP);
+
+
 
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
