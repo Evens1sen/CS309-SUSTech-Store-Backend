@@ -1,6 +1,6 @@
 package com.project.store.mapper;
 
-import com.project.store.entity.Orders;
+import com.project.store.entity.UserChat;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
  * </p>
  *
  * @author ${author}
- * @since 2021-11-19
+ * @since 2021-11-24
  */
 @Repository
-public interface OrdersMapper extends BaseMapper<Orders> {
+public interface UserChatMapper extends BaseMapper<UserChat> {
 
 }
