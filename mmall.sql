@@ -415,6 +415,7 @@ VALUES (11, 10, '北京市海淀区大有庄', '朋友家', 0, '2019-06-03 02:32
 UNLOCK TABLES;
 
 drop table if exists user_chat;
+
 create table user_chat
 (
     id        bigint auto_increment,
@@ -431,6 +432,7 @@ create table user_chat
 
 insert into user_chat value (1, 11911001, 11911002, 'sdasdafd', CURRENT_TIMESTAMP);
 insert into user_chat value (2, 11911001, 11911003, 'sdasdafd', CURRENT_TIMESTAMP);
+
 
 
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
