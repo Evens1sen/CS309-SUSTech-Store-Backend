@@ -17,7 +17,6 @@ class ProductServiceTest {
 
     @Test
     void test() {
-        System.out.println(productService.findProductVOById(733));
-        System.out.println();
+        productService.searchAllProductVO("香水").forEach(System.out::println);
     }
 }

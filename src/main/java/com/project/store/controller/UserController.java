@@ -28,7 +28,6 @@ import java.util.Objects;
  */
 
 @Api(tags = "UserController")
-@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -38,12 +37,7 @@ public class UserController {
 
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
-    //FIXME: bugs in validation
-    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam, BindingResult bindingResult) {
-        for (ObjectError error : bindingResult.getAllErrors()) {
-            return error.getDefaultMessage();
-        }
-
+    public String register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
         User user = new User();
         user.setUid(userRegisterParam.getUid());
         user.setPassword(userRegisterParam.getPassword());
@@ -66,19 +60,23 @@ public class UserController {
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
     //FIXME: Salt hash the password
-    public String login(@Validated @RequestBody UserLoginParam userLoginParam, HttpSession session) {
+    //FIXME: Add the common result
+    public boolean login(@Valid @RequestBody UserLoginParam userLoginParam, HttpSession session) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uid", userLoginParam.getUid());
         User user = userService.getOne(wrapper);
         if (user == null) {
-            return "请先注册账号";
+//            return "请先注册账号";
+            return false;
         }
         if (!Objects.equals(user.getPassword(), userLoginParam.getPassword())) {
-            return "密码错误";
+//            return "密码错误";
+            return false;
         }
 
         session.setAttribute("user", user);
-        return "登录成功";
+//        return "登录成功";
+        return true;
     }
 
     @ApiOperation(value = "登出", notes = "")
