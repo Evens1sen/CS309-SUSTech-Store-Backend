@@ -11,10 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpSession;
-import java.net.http.HttpClient;
 import java.util.List;
 
 /**
@@ -39,14 +35,20 @@ public class ProductController {
         return productService.list();
     }
 
-    @ApiOperation(value = "根据分类id获取商品列表")
+    @ApiOperation(value = "获取所有商品VO", notes = "默认按时间排序")
+    @GetMapping("/listProductVO")
+    public List<ProductVO> listProductVO() {
+        return productService.findAllProductVO();
+    }
+
+    @ApiOperation(value = "根据分类id获取商品列表", notes = "默认按时间排序")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "level", value = "分类层级(one, two, three)", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "level", value = "分类层级(1, 2, 3)", required = true, dataType = "String"),
             @ApiImplicitParam(name = "id", value = "分类号", required = true, dataType = "int")}
     )
     @GetMapping("/list/{level}/{id}")
-    public List<Product> listByCategoryId(@PathVariable String level, @PathVariable Integer id) {
-        return productService.findByCategoryId(level, id);
+    public List<ProductVO> listByCategoryId(@PathVariable Integer level, @PathVariable Integer id) {
+        return productService.findProductVOByCategoryId(level, id);
     }
 
     @ApiOperation(value = "根据id获取商品详情")
@@ -59,6 +61,12 @@ public class ProductController {
     @GetMapping("/findProductVOById/{id}")
     public ProductVO findProductVOById(@PathVariable Integer id) {
         return productService.findProductVOById(id);
+    }
+
+    @ApiOperation(value = "搜索商品获取所有VO", notes = "默认按时间排序")
+    @GetMapping("/search/{key}")
+    public List<ProductVO> search(@PathVariable String key) {
+        return productService.searchAllProductVO(key);
     }
 
     @ApiOperation(value = "添加商品")

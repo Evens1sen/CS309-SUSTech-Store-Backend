@@ -1,5 +1,6 @@
 package com.project.store.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.mapper.ProductMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +36,44 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private UserMapper userMapper;
 
     @Override
-    public List<Product> findByCategoryId(String level, Integer categoryId) {
+    public List<Product> findByCategoryId(Integer level, Integer categoryId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("categorylevel" + level + "_id", categoryId);
+        String levelStr;
+        if (level == 1) {
+            levelStr = "one";
+        } else if (level == 2) {
+            levelStr = "two";
+        } else {
+            levelStr = "three";
+        }
+        map.put("categorylevel" + levelStr + "_id", categoryId);
         return productMapper.selectByMap(map);
+    }
+
+    @Override
+    public List<ProductVO> findProductVOByCategoryId(Integer level, Integer categoryId) {
+        List<ProductVO> productVOList = new ArrayList<>();
+        String levelStr;
+        if (level == 1) {
+            levelStr = "one";
+        } else if (level == 2) {
+            levelStr = "two";
+        } else {
+            levelStr = "three";
+        }
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("categorylevel" + levelStr + "_id", categoryId);
+        wrapper.orderByDesc("update_time");
+        List<Product> productList = productMapper.selectList(wrapper);
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+
+        return productVOList;
     }
 
     @Override
@@ -48,6 +84,40 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         BeanUtils.copyProperties(product, productVO);
         BeanUtils.copyProperties(owner, productVO);
         return productVO;
+    }
+
+    public List<ProductVO> findAllProductVO() {
+        List<ProductVO> productVOList = new ArrayList<>();
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.orderByDesc("update_time");
+        List<Product> productList = productMapper.selectList(wrapper);
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+
+        return productVOList;
+    }
+
+    @Override
+    public List<ProductVO> searchAllProductVO(String key) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.like("name", key);
+        wrapper.orderByDesc("update_time");
+        List<Product> productList = productMapper.selectList(wrapper);
+        List<ProductVO> productVOList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+
+        return productVOList;
     }
 
 }

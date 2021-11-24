@@ -18,7 +18,13 @@ import java.util.List;
  */
 public interface ProductService extends IService<Product> {
 
-    List<Product> findByCategoryId(String level, Integer findByCategoryId);
+    List<Product> findByCategoryId(Integer level, Integer categoryId);
+
+    List<ProductVO> findProductVOByCategoryId(Integer level, Integer categoryId);
 
     ProductVO findProductVOById(Integer id);
+
+    List<ProductVO> findAllProductVO();
+
+    List<ProductVO> searchAllProductVO(String key);
 }

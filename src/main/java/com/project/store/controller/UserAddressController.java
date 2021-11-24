@@ -68,6 +68,7 @@ public class UserAddressController {
         return userAddressService.removeById(id);
     }
 
+    //FIXME
     @ApiOperation(value = "修改地址")
     @PutMapping("/update/{id}")
     public boolean updateById(@RequestBody UserAddressParam userAddressParam, @PathVariable Integer id, HttpSession session) {
@@ -86,6 +87,7 @@ public class UserAddressController {
                 userAddress1.setIsdefault(0);
                 userAddressService.updateById(userAddress1);
             }
+            userAddress.setIsdefault(1);
         }
         return userAddressService.updateById(userAddress);
     }
