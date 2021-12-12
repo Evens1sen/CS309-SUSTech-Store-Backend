@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
+import com.project.store.enums.OrdersStatus;
 import com.project.store.service.OrdersService;
 import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
@@ -59,7 +60,7 @@ public class OrdersController {
         if (!result) {
             return false;
         }
-        orders.setStatus(1);
+        orders.setStatus(OrdersStatus.PAYED);
         ordersService.saveOrUpdate(orders);
         return true;
     }
@@ -68,7 +69,7 @@ public class OrdersController {
     @PutMapping("/confirmById/{id}")
     public boolean confirmById(@PathVariable String id) {
         Orders orders = ordersService.getById(id);
-        if (orders.getStatus() == 1) {
+        if (orders.getStatus() == OrdersStatus.PAYED) {
             UpdateWrapper wrapper = new UpdateWrapper();
             wrapper.set("status", 2);
             wrapper.eq("id", id);
@@ -81,7 +82,7 @@ public class OrdersController {
     @PutMapping("close/{id}")
     public boolean closeById(@PathVariable Integer id) {
         Orders orders = ordersService.getById(id);
-        if (orders.getStatus() == 2) {
+        if (orders.getStatus() == OrdersStatus.PAYED) {
             UpdateWrapper wrapper = new UpdateWrapper();
             wrapper.set("status", 3);
             wrapper.eq("id", id);

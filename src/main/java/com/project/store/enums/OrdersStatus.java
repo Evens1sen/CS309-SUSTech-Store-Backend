@@ -5,13 +5,16 @@ import lombok.Getter;
 
 @Getter
 public enum OrdersStatus {
-    OPENED(0, "开启"),
-    PAYED(1, "已支付"),
-    CLOSED(2, "关闭");
+    OPENED(0, "买家已下单"),
+    PAYED(1, "买家已支付"),
+    SHIPPED(2, "卖家已发货"),
+    CONFIRMED(3, "买家已确认"),
+    CLOSED(4, "已关闭");
 
     @EnumValue
-    private int code;
-    private String msg;
+    private final int code;
+
+    private final String msg;
 
     OrdersStatus(int code, String msg) {
         this.code = code;

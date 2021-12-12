@@ -2,6 +2,7 @@ package com.project.store.vo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.project.store.enums.OrdersStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class OrdersVO {
 
     private String serialnumber;
 
-    private Integer status;
+    private OrdersStatus status;
 
     private LocalDateTime createTime;
 }
