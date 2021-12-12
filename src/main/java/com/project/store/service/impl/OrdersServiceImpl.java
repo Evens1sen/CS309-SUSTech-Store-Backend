@@ -5,6 +5,7 @@ import com.project.store.entity.Cart;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
+import com.project.store.enums.OrdersStatus;
 import com.project.store.mapper.OrdersMapper;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
@@ -50,7 +51,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orders.setUserAddress(useAddress);
         orders.setProductId(product.getId());
         orders.setCost(product.getPrice());
-        orders.setStatus(0);
+        orders.setStatus(OrdersStatus.OPENED);
 
         String seriaNumber = null;
         try {

@@ -58,33 +58,33 @@ public class UserController {
         return new Result<>(ResultCode.FAILED, "注册失败");
     }
 
-//    @ApiOperation(value = "校验注册参数", notes = "")
-//    @PostMapping("/registerValidate")
-//    public String registerValidate(@Valid @RequestBody UserRegisterParam userRegisterParam) {
-//        User user = new User();
-//        user.setUid(userRegisterParam.getUid());
-//        user.setPassword(userRegisterParam.getPassword());
-//        user.setNickName(userRegisterParam.getNickName());
-//        user.setEmail(userRegisterParam.getEmail());
-//
-//        boolean result;
-//        try {
-//            result = userService.save(user);
-//        } catch (Exception e) {
-//            return "uid或昵称已存在";
-//        }
-//
-//        if (result) {
-//            return "注册成功";
-//        }
-//        return "注册失败";
-//    }
-//
-//    @ApiOperation(value = "校验验证码")
-//    @PostMapping("/verifyEmail/{code}")
-//    public boolean verifyEmail(@PathVariable String code, String sendCode) {
-//        return Objects.equals(code, sendCode);
-//    }
+    @ApiOperation(value = "校验注册参数")
+    @PostMapping("/registerValidate")
+    public String registerValidate(@Valid @RequestBody UserRegisterParam userRegisterParam) {
+        User user = new User();
+        user.setUid(userRegisterParam.getUid());
+        user.setPassword(userRegisterParam.getPassword());
+        user.setNickName(userRegisterParam.getNickName());
+        user.setEmail(userRegisterParam.getEmail());
+
+        boolean result;
+        try {
+            result = userService.save(user);
+        } catch (Exception e) {
+            return "uid或昵称已存在";
+        }
+
+        if (result) {
+            return "注册成功";
+        }
+        return "注册失败";
+    }
+
+    @ApiOperation(value = "校验验证码")
+    @PostMapping("/verifyEmail/{code}")
+    public boolean verifyEmail(@PathVariable String code, String sendCode) {
+        return Objects.equals(code, sendCode);
+    }
 
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")

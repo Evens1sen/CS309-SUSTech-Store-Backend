@@ -318,6 +318,35 @@ VALUES (1, 'Study', 0, 1),
     ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `product_image`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_image`
+(
+    `id`          int      NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `product_id`  int      NOT NULL COMMENT '商品id',
+    `image`       varchar(200) DEFAULT NULL COMMENT '图片',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime NOT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`product_id`) REFERENCES product (`id`),
+    UNIQUE KEY `PK__EASYBUY___94F6E55132E0915F` (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 777
+  DEFAULT CHARSET = utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `product_image` WRITE;
+/*!40000 ALTER TABLE `product_image`
+    DISABLE KEYS */;
+INSERT INTO `product_image`
+VALUES (1, 733, 'test1.jpg', '2019-10-22 21:20:24', '2019-10-22 21:20:24'),
+       (2, 734, 'test2.jpg', '2019-10-22 21:20:24', '2019-10-22 21:20:24'),
+       (3, 734, 'test3.jpg', '2019-10-22 21:20:24', '2019-10-22 21:20:24');
+/*!40000 ALTER TABLE `product_image`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `user`
 --
