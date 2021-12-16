@@ -463,9 +463,47 @@ insert into user_chat value (1, 11911001, 11911002, 'sdasdafd', CURRENT_TIMESTAM
 insert into user_chat value (2, 11911001, 11911003, 'sdasdafd', CURRENT_TIMESTAMP);
 
 
+DROP TABLE IF EXISTS `errand`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `errand`
+(
+    `id`          int          NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `name`        varchar(200) NOT NULL COMMENT '名称',
+    `description` varchar(1024) DEFAULT NULL COMMENT '描述',
+    `price`       float        NOT NULL COMMENT '价格',
+    `origin`      varchar(200) NOT NULL COMMENT '起始地点',
+    `destination` varchar(200) NOT NULL COMMENT '结束地点',
+    `owner_id`    int           DEFAULT NULL COMMENT '卖家id',
+    `type`    int           DEFAULT NULL COMMENT '分类',
+    `buyer_id`    int           DEFAULT NULL COMMENT '买家id' COMMENT '买家id',
+    `status`      int           DEFAULT 0 COMMENT '跑腿状态',
+    `image`       varchar(200)  DEFAULT NULL COMMENT '图片',
+    `create_time` datetime      DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime     NOT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `PK__EASYBUY___94F6E55132E0915F` (`id`),
+    FOREIGN KEY (owner_id) REFERENCES user (uid),
+    FOREIGN KEY (buyer_id) REFERENCES user (uid)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 777
+  DEFAULT CHARSET = utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `errand` WRITE;
+/*!40000 ALTER TABLE `errand`
+    DISABLE KEYS */;
+INSERT INTO `errand`
+VALUES (1, '给zmt送东西', '给zmt送100个麦麦脆汁鸡', 100, '15栋213', '荔园', 11912919, 1, 11912614, 0, '', '2019-06-03 02:32:39',
+        '2019-06-03 02:32:39'),
+       (2, '给mihoyo取钱', '冲648', 648, '璃月港', '15栋213', 11912919, 2, 11111111, 0, '', '2019-06-03 02:32:39',
+        '2019-06-03 02:32:39');
+/*!40000 ALTER TABLE `errand`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
-
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
