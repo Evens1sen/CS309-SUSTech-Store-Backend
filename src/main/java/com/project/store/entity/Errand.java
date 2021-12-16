@@ -10,7 +10,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
 
-import com.project.store.enums.OrdersStatus;
+import com.project.store.enums.ErrandStatus;
+import com.project.store.enums.ErrandType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,12 +22,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author ${author}
- * @since 2021-11-19
+ * @since 2021-12-16
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Orders implements Serializable {
+public class Errand implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,30 +38,54 @@ public class Orders implements Serializable {
     private Integer id;
 
     /**
-     * 用户主键
+     * 名称
      */
-    private Integer buyerId;
+    private String name;
 
+    /**
+     * 描述
+     */
+    private String description;
+
+    /**
+     * 价格
+     */
+    private Float price;
+
+    /**
+     * 起始地点
+     */
+    private String origin;
+
+    /**
+     * 结束地点
+     */
+    private String destination;
+
+    /**
+     * 卖家id
+     */
     private Integer ownerId;
 
     /**
-     * 用户地址
+     * 分类
      */
-    private String userAddress;
-
-    private Integer productId;
+    private ErrandType type;
 
     /**
-     * 总金额
+     * 买家id
      */
-    private Float cost;
+    private Integer buyerId;
 
     /**
-     * 订单号
+     * 跑腿状态
      */
-    private String serialnumber;
+    private ErrandStatus status;
 
-    private OrdersStatus status;
+    /**
+     * 图片
+     */
+    private String image;
 
     /**
      * 创建时间

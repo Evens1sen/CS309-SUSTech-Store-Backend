@@ -1,7 +1,7 @@
 package com.project.store.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.project.store.entity.Cart;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
@@ -10,15 +10,10 @@ import com.project.store.mapper.OrdersMapper;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
 import com.project.store.service.OrdersService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.project.store.service.UserService;
-import com.project.store.vo.CartVO;
 import com.project.store.vo.OrdersVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

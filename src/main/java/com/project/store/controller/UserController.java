@@ -104,6 +104,12 @@ public class UserController {
         return new Result<>(StpUtil.getTokenInfo());
     }
 
+    @ApiOperation(value = "检测是否登录", notes = "")
+    @GetMapping("/isLogin")
+    public boolean isLogin() {
+        return StpUtil.isLogin();
+    }
+
     @ApiOperation(value = "登出", notes = "")
     @GetMapping("/logout")
     public String logout() {

@@ -31,23 +31,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
 
     @Override
-    public boolean sendNotification(String email) throws GeneralSecurityException {
+    public boolean sendNotification(String email) {
         String mess = "亲，你有新的订单，请及时上号处理";
         return sendEmail(email, mess);
     }
 
     @Override
-    public String sendVerification(String email) throws GeneralSecurityException {
+    public String sendVerification(String email) {
         Random random = new Random();
         int num = random.nextInt(1000000);
         String ver = String.valueOf(num);
         String mess = "本次验证码为：" + ver;
-        if (sendEmail(email, mess)) return ver;
-        return null;
+        sendEmail(email, mess);
+        return ver;
     }
 
     @Override
-    public boolean sendEmail(String email, String text) throws GeneralSecurityException {
+    public boolean sendEmail(String email, String text) {
         String to = email;
         String from = "457894974@qq.com";
         String host = "smtp.qq.com";
@@ -55,7 +55,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Properties properties = System.getProperties();
         properties.setProperty("mail.smtp.host", host);
         properties.put("mail.smtp.auth", "true");
-        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        MailSSLSocketFactory sf = null;
+        try {
+            sf = new MailSSLSocketFactory();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
         sf.setTrustAllHosts(true);
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.ssl.socketFactory", sf);

@@ -62,6 +62,10 @@ public class OrdersController {
         }
         orders.setStatus(OrdersStatus.PAYED);
         ordersService.saveOrUpdate(orders);
+
+        User owner = userService.getById(orders.getOwnerId());
+        userService.sendNotification(owner.getEmail());
+
         return true;
     }
 
@@ -82,7 +86,7 @@ public class OrdersController {
     @PutMapping("close/{id}")
     public boolean closeById(@PathVariable Integer id) {
         Orders orders = ordersService.getById(id);
-        if (orders.getStatus() == OrdersStatus.PAYED) {
+        if (orders.getStatus() == OrdersStatus.SHIPPED) {
             UpdateWrapper wrapper = new UpdateWrapper();
             wrapper.set("status", 3);
             wrapper.eq("id", id);

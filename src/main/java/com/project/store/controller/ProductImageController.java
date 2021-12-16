@@ -34,4 +34,11 @@ public class ProductImageController {
         productImage.setImage(url);
         return productImageService.save(productImage);
     }
+
+    @ApiOperation(value = "上传图片")
+    @PostMapping("postImage")
+    public <T> void postImage(@RequestBody T t){
+        System.out.println(t);
+        System.out.println(t.getClass());
+    }
 }
