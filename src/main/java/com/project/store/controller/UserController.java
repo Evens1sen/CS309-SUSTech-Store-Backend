@@ -80,6 +80,12 @@ public class UserController {
         return "注册失败";
     }
 
+    @ApiOperation(value = "注销账号")
+    @DeleteMapping("/deleteById/{id}")
+    public boolean deleteById(@PathVariable Integer id) {
+        return userService.removeById(id);
+    }
+
     @ApiOperation(value = "校验验证码")
     @PostMapping("/verifyEmail/{code}")
     public boolean verifyEmail(@PathVariable String code, String sendCode) {
@@ -149,6 +155,13 @@ public class UserController {
         }
         user.setBalance(user.getBalance() - amount);
         return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation(value = "更新当前用户的信息")
+    @PutMapping("/updateUser/{information}")
+    public boolean updateUser(@PathVariable Integer id){
+        // todo
+        return true;
     }
 }
 
