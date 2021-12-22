@@ -110,11 +110,6 @@ public class UserController {
         return userService.getById(StpUtil.getLoginIdAsInt());
     }
 
-//    @ApiOperation(value = "修改密码")
-//    @GetMapping("/changePassword")
-//    public boolean changePassword(){
-//
-//    }
 
     @ApiOperation(value = "为当前用户充值")
     @PutMapping("/addBalance/{amount}")
@@ -157,3 +152,5 @@ public class UserController {
         return userService.saveOrUpdate(user);
     }
 }
+
+
