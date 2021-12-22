@@ -1,5 +1,6 @@
 package com.project.store.controller;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,6 +10,7 @@ import com.project.store.dto.UserLoginParam;
 import com.project.store.dto.UserRegisterParam;
 import com.project.store.entity.User;
 import com.project.store.service.UserService;
+import com.project.store.util.ImageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -35,13 +37,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //FIXME: Verification code
     @ApiOperation(value = "注册", notes = "")
     @PostMapping("/register")
     public Result<String> register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
         User user = new User();
         user.setUid(userRegisterParam.getUid());
-        user.setPassword(userRegisterParam.getPassword());
+        user.setPassword(SaSecureUtil.md5(userRegisterParam.getPassword()));
         user.setNickName(userRegisterParam.getNickName());
         user.setEmail(userRegisterParam.getEmail());
 
@@ -58,43 +59,14 @@ public class UserController {
         return new Result<>(ResultCode.FAILED, "注册失败");
     }
 
-    @ApiOperation(value = "校验注册参数")
-    @PostMapping("/registerValidate")
-    public String registerValidate(@Valid @RequestBody UserRegisterParam userRegisterParam) {
-        User user = new User();
-        user.setUid(userRegisterParam.getUid());
-        user.setPassword(userRegisterParam.getPassword());
-        user.setNickName(userRegisterParam.getNickName());
-        user.setEmail(userRegisterParam.getEmail());
-
-        boolean result;
-        try {
-            result = userService.save(user);
-        } catch (Exception e) {
-            return "uid或昵称已存在";
-        }
-
-        if (result) {
-            return "注册成功";
-        }
-        return "注册失败";
-    }
-
-    @ApiOperation(value = "注销账号")
-    @DeleteMapping("/deleteById/{id}")
-    public boolean deleteById(@PathVariable Integer id) {
-        return userService.removeById(id);
-    }
-
-    @ApiOperation(value = "校验验证码")
-    @PostMapping("/verifyEmail/{code}")
-    public boolean verifyEmail(@PathVariable String code, String sendCode) {
-        return Objects.equals(code, sendCode);
+    @ApiOperation(value = "发送验证码")
+    @PostMapping("/verifyEmail/{email}")
+    public String verifyEmail(@PathVariable String email) {
+        return userService.sendVerification(email);
     }
 
     @ApiOperation(value = "登录", notes = "")
     @PostMapping("/login")
-    //FIXME: Salt hash the password
     public Result<SaTokenInfo> login(@Valid @RequestBody UserLoginParam userLoginParam) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("uid", userLoginParam.getUid());
@@ -102,7 +74,7 @@ public class UserController {
         if (user == null) {
             return new Result<>(ResultCode.UNREGISTERED, null);
         }
-        if (!Objects.equals(user.getPassword(), userLoginParam.getPassword())) {
+        if (!Objects.equals(user.getPassword(), SaSecureUtil.md5(userLoginParam.getPassword()))) {
             return new Result<>(ResultCode.WRONG_PASSWORD, null);
         }
 
@@ -138,6 +110,7 @@ public class UserController {
         return userService.getById(StpUtil.getLoginIdAsInt());
     }
 
+
     @ApiOperation(value = "为当前用户充值")
     @PutMapping("/addBalance/{amount}")
     public boolean addBalance(@PathVariable Float amount) {
@@ -157,11 +130,26 @@ public class UserController {
         return userService.saveOrUpdate(user);
     }
 
-    @ApiOperation(value = "更新当前用户的信息")
-    @PutMapping("/updateUser/{information}")
-    public boolean updateUser(@PathVariable Integer id){
-        // todo
-        return true;
+    @ApiOperation("添加用户头像")
+    @PutMapping("/addUserIcon")
+    public boolean addUserIcon(@RequestBody String baseStr) {
+        // Random generate a file name
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        String objectName = ImageUtil.generateObjectName(user.getUid().toString(), 4);
+        String url = ImageUtil.postImage(baseStr, objectName);
+        user.setIcon(url);
+        return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation("删除用户头像")
+    @DeleteMapping("deleteUserIcon")
+    public boolean deleteUserIcon() {
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        user.setIcon("");
+        String[] temp = user.getIcon().split("/");
+        String objectName = temp[temp.length - 1];
+        ImageUtil.deleteImage(objectName);
+        return userService.saveOrUpdate(user);
     }
 }
 
