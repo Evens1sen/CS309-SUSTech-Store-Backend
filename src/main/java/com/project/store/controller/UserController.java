@@ -37,7 +37,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "注册", notes = "")
+    @ApiOperation(value = "注册")
     @PostMapping("/register")
     public Result<String> register(@Valid @RequestBody UserRegisterParam userRegisterParam) {
         User user = new User();
@@ -65,7 +65,7 @@ public class UserController {
         return userService.sendVerification(email);
     }
 
-    @ApiOperation(value = "登录", notes = "")
+    @ApiOperation(value = "登录")
     @PostMapping("/login")
     public Result<SaTokenInfo> login(@Valid @RequestBody UserLoginParam userLoginParam) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -82,13 +82,13 @@ public class UserController {
         return new Result<>(StpUtil.getTokenInfo());
     }
 
-    @ApiOperation(value = "检测是否登录", notes = "")
+    @ApiOperation(value = "检测是否登录")
     @GetMapping("/isLogin")
     public boolean isLogin() {
         return StpUtil.isLogin();
     }
 
-    @ApiOperation(value = "登出", notes = "")
+    @ApiOperation(value = "登出")
     @GetMapping("/logout")
     public String logout() {
         StpUtil.logout();
@@ -110,6 +110,21 @@ public class UserController {
         return userService.getById(StpUtil.getLoginIdAsInt());
     }
 
+    @ApiOperation(value = "修改用户密码")
+    @PostMapping("/changePassword")
+    public boolean changePassword(@RequestBody String password){
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        user.setPassword(SaSecureUtil.md5(password));
+        return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation(value = "修改用户昵称")
+    @PostMapping("/changeNickname")
+    public boolean changeNickname(@RequestBody String nickname){
+        User user = userService.getById(StpUtil.getLoginIdAsInt());
+        user.setNickName(nickname);
+        return userService.saveOrUpdate(user);
+    }
 
     @ApiOperation(value = "为当前用户充值")
     @PutMapping("/addBalance/{amount}")

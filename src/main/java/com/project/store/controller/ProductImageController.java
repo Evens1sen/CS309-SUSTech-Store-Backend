@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = "ProductImageController")
 @RestController
@@ -21,10 +22,11 @@ public class ProductImageController {
 
     @ApiOperation(value = "根据商品id获取所有商品图片")
     @GetMapping("/listProductImageByProductId/{id}")
-    public List<ProductImage> listProductImageByProductId(@PathVariable Integer id) {
+    public List<String> listProductImageByProductId(@PathVariable Integer id) {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("product_id", id);
-        return productImageService.list(wrapper);
+        List<ProductImage> productImageList = productImageService.list(wrapper);
+        return productImageList.stream().map(ProductImage::getImage).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "上传商品图片")
