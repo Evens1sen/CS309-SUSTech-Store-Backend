@@ -1,17 +1,14 @@
 package com.project.store.controller;
 
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.OSSException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.project.store.entity.ProductImage;
 import com.project.store.service.ProductImageService;
+import com.project.store.util.ImageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Api(tags = "ProductImageController")
@@ -30,47 +27,24 @@ public class ProductImageController {
         return productImageService.list(wrapper);
     }
 
-    @ApiOperation(value = "根据商品id上传图片url")
-    @PostMapping("/addProductImage/{id}/{url}")
-    public boolean addProductImage(@PathVariable Integer id, @PathVariable String url) {
+    @ApiOperation(value = "上传商品图片")
+    @PostMapping("/addProductImage/{productId}")
+    public void addProductImage(@RequestBody String baseStr, @PathVariable Integer productId) {
+        // Random generate a file name
+        String objectName = ImageUtil.generateObjectName(productId.toString(), 4);
+        String url = ImageUtil.postImage(baseStr, objectName);
         ProductImage productImage = new ProductImage();
-        productImage.setProductId(id);
         productImage.setImage(url);
-        return productImageService.save(productImage);
+        productImage.setProductId(productId);
+        productImageService.save(productImage);
     }
 
-    @ApiOperation(value = "上传测试")
-    @PostMapping("post")
-    public <T> String post(@RequestBody T body) {
-        System.out.println(body.getClass());
-        return body.getClass().getName();
+    @ApiOperation(value = "删除商品图片")
+    @DeleteMapping("/deleteProductImage/{productId}/{objectName}")
+    public boolean deleteProductImage(@PathVariable Integer productId, @PathVariable String objectName) {
+        ImageUtil.deleteImage(objectName);
+        return productImageService.removeById(productId);
     }
 
-    @ApiOperation(value = "上传图片")
-    @PostMapping("postImage")
-    public void postImage() {
-        // yourEndpoint填写Bucket所在地域对应的Endpoint。以华东1（杭州）为例，Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。
-        String endpoint = "https://oss-cn-shenzhen.aliyuncs.com";
-        // 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。
-        String accessKeyId = "LTAI5t8Fkz58dPJEVP3AciH9";
-        String accessKeySecret = "PsndQ3YByY327bDVuX5hQirztzvd4u";
-        // 填写Bucket名称，例如examplebucket。
-        String bucketName = "sustech-store";
-        // 填写文件名。文件名包含路径，不包含Bucket名称。例如exampledir/exampleobject.txt。
-        String objectName = "D:/Users/Desktop/Files/CourseTable.jpg";
 
-        OSS ossClient = null;
-        try {
-            // 创建OSSClient实例。
-            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
-            String content = "Hello OSS";
-            ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(content.getBytes()));
-        } catch (OSSException e) {
-            e.printStackTrace();
-        } finally {
-            // 关闭OSSClient。
-            ossClient.shutdown();
-        }
-    }
 }

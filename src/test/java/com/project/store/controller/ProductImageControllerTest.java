@@ -12,6 +12,7 @@ class ProductImageControllerTest {
 
     @Test
     void test(){
-        productImageController.postImage();
+        String str = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UH9rFFGGuJEy";
+        System.out.println(str.substring(23));
     }
 }

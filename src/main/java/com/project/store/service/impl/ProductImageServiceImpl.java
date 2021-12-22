@@ -6,9 +6,11 @@ import com.project.store.service.ProductImageService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
+
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author ${author}
@@ -16,5 +18,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ProductImageServiceImpl extends ServiceImpl<ProductImageMapper, ProductImage> implements ProductImageService {
-
 }

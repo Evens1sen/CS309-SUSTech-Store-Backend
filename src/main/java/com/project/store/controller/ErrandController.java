@@ -7,6 +7,7 @@ import com.project.store.entity.User;
 import com.project.store.enums.ErrandStatus;
 import com.project.store.service.ErrandService;
 import com.project.store.service.UserService;
+import com.project.store.vo.ErrandVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class ErrandController {
     @GetMapping("/list")
     public List<Errand> list() {
         return errandService.list();
+    }
+
+    @ApiOperation(value = "获取所有跑腿VO")
+    @GetMapping("/listVO")
+    public List<ErrandVO> listVO() {
+        return errandService.findAllErrandVO();
     }
 
     @ApiOperation(value = "获取所有分类列表")

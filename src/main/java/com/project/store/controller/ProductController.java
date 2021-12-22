@@ -2,15 +2,20 @@ package com.project.store.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.project.store.dto.ProductDto;
 import com.project.store.entity.Product;
+import com.project.store.entity.ProductImage;
 import com.project.store.entity.User;
+import com.project.store.service.ProductImageService;
 import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
+import com.project.store.util.ImageUtil;
 import com.project.store.vo.ProductVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +36,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductImageService productImageService;
 
     @Autowired
     private UserService userService;
@@ -77,10 +85,28 @@ public class ProductController {
 
     @ApiOperation(value = "添加商品")
     @PostMapping("/add")
-    public boolean add(@RequestBody Product product) {
+    public boolean add(@RequestBody ProductDto productDto) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
-        product.setOwnerId(user.getUid());
-        return productService.save(product);
+        productDto.setOwnerId(user.getUid());
+        Product product = new Product();
+        BeanUtils.copyProperties(productDto, product);
+
+        String objectName = ImageUtil.generateObjectName(productDto.getId().toString(), 4);
+        boolean isFirst = true;
+        for (String baseStr : productDto.getImages()){
+            String url = ImageUtil.postImage(baseStr, objectName);
+            if (isFirst){
+                product.setImage(url);
+                productService.save(product);
+                isFirst = false;
+            }
+            ProductImage productImage = new ProductImage();
+            productImage.setImage(url);
+            productImage.setProductId(product.getId());
+            productImageService.save(productImage);
+        }
+
+        return true;
     }
 
     @ApiOperation(value = "修改商品信息")
