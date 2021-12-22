@@ -12,3 +12,10 @@ mybatis-plus:
 
 server:
   port: 8181
+
+sa-token:
+  timeout: 2592000
+  activity-timeout: -1
+  is-concurrent: true
+  is-share: false
+  is-log: false
