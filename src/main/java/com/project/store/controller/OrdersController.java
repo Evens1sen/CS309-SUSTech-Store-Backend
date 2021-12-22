@@ -44,7 +44,7 @@ public class OrdersController {
     //FIXME: Add more restrictions on orders, and money
     @ApiOperation(value = "用户添加订单，订单状态为0")
     @PostMapping("/add/{productId}/{useAddress}")
-    public boolean add(@PathVariable Integer productId, @PathVariable String useAddress) {
+    public Integer add(@PathVariable Integer productId, @PathVariable String useAddress) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         Product product = productService.getById(productId);
         return ordersService.save(product, useAddress, user);

@@ -3,10 +3,10 @@ package com.project.store.util;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Base64;
 import java.util.Random;
 
 public class ImageUtil {
@@ -53,8 +53,8 @@ public class ImageUtil {
 
     //Decode base64 image to byte array
     public static byte[] base64ToByteArray(String imgData) {
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] b = decoder.decode(imgData);
+//        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] b = Base64.decodeBase64(imgData);
         for (int i = 0; i < b.length; ++i) {
             if (b[i] < 0) {
                 b[i] += 256;

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface OrdersService extends IService<Orders> {
 
-    boolean save(@RequestBody Product product, @PathVariable String useAddress, User user);
+    Integer save(Product product, String useAddress, User user);
 
     List<OrdersVO> findAllOrdersVOByBuyerID(Integer buyerId);
 

@@ -39,7 +39,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     private UserMapper userMapper;
 
     @Override
-    public boolean save(Product product, String useAddress, User user) {
+    public Integer save(Product product, String useAddress, User user) {
         Orders orders = new Orders();
         orders.setBuyerId(user.getUid());
         orders.setOwnerId(product.getOwnerId());
@@ -59,9 +59,11 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             e.printStackTrace();
         }
         orders.setSerialnumber(seriaNumber);
+        ordersMapper.insert(orders);
 
-        int result = ordersMapper.insert(orders);
-        return result > 0;
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("serialnumber", seriaNumber);
+        return ordersMapper.selectOne(wrapper).getId();
     }
 
     @Override

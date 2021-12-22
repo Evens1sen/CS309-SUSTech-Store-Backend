@@ -91,9 +91,9 @@ public class ProductController {
         Product product = new Product();
         BeanUtils.copyProperties(productDto, product);
 
-        String objectName = ImageUtil.generateObjectName(productDto.getId().toString(), 4);
         boolean isFirst = true;
         for (String baseStr : productDto.getImages()){
+            String objectName = ImageUtil.generateObjectName(productDto.getId().toString(), 8);
             String url = ImageUtil.postImage(baseStr, objectName);
             if (isFirst){
                 product.setImage(url);

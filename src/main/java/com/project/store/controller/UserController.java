@@ -146,7 +146,7 @@ public class UserController {
     }
 
     @ApiOperation("添加用户头像")
-    @PutMapping("/addUserIcon")
+    @PostMapping("/addUserIcon")
     public boolean addUserIcon(@RequestBody String baseStr) {
         // Random generate a file name
         User user = userService.getById(StpUtil.getLoginIdAsInt());
