@@ -45,6 +45,7 @@ public class UserController {
         user.setPassword(SaSecureUtil.md5(userRegisterParam.getPassword()));
         user.setNickName(userRegisterParam.getNickName());
         user.setEmail(userRegisterParam.getEmail());
+        user.setCredit(100);
 
         boolean result;
         try {
