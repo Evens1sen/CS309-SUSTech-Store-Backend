@@ -2,6 +2,8 @@ package com.project.store.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.store.dto.ProductDto;
 import com.project.store.entity.Product;
 import com.project.store.entity.ProductImage;
@@ -53,6 +55,12 @@ public class ProductController {
     @GetMapping("/listProductVO")
     public List<ProductVO> listProductVO() {
         return productService.findAllProductVO();
+    }
+
+    @ApiOperation(value = "获取分页商品VO", notes = "默认按时间排序")
+    @GetMapping("/findProductVOPage/{pageNum}/{pageSize}")
+    public List<ProductVO> findProductVOPage(@PathVariable Integer pageNum, @PathVariable Integer pageSize){
+        return productService.findProductVOPage(pageNum, pageSize);
     }
 
     @ApiOperation(value = "根据分类id获取商品列表", notes = "默认按时间排序")
