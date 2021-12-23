@@ -14,7 +14,6 @@ import com.project.store.util.ImageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -172,11 +171,12 @@ public class UserController {
 
     @ApiOperation("添加用户头像")
     @PostMapping("/addUserIcon")
-    public boolean addUserIcon(@RequestBody String baseStr) {
+    public boolean addUserIcon(@RequestBody String[] baseStr) {
         // Random generate a file name
+        String base = baseStr[0];
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         String objectName = ImageUtil.generateObjectName(user.getUid().toString(), 4);
-        String url = ImageUtil.postImage(baseStr, objectName);
+        String url = ImageUtil.postImage(base, objectName);
         user.setIcon(url);
         return userService.saveOrUpdate(user);
     }
