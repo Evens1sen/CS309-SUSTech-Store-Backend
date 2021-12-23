@@ -2,8 +2,6 @@ package com.project.store.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.store.dto.ProductDto;
 import com.project.store.entity.Product;
 import com.project.store.entity.ProductImage;
@@ -59,7 +57,7 @@ public class ProductController {
 
     @ApiOperation(value = "获取分页商品VO", notes = "默认按时间排序")
     @GetMapping("/findProductVOPage/{pageNum}/{pageSize}")
-    public List<ProductVO> findProductVOPage(@PathVariable Integer pageNum, @PathVariable Integer pageSize){
+    public List<ProductVO> findProductVOPage(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {
         return productService.findProductVOPage(pageNum, pageSize);
     }
 
@@ -100,10 +98,10 @@ public class ProductController {
         BeanUtils.copyProperties(productDto, product);
 
         boolean isFirst = true;
-        for (String baseStr : productDto.getImages()){
+        for (String baseStr : productDto.getImages()) {
             String objectName = ImageUtil.generateObjectName(productDto.getId().toString(), 8);
             String url = ImageUtil.postImage(baseStr, objectName);
-            if (isFirst){
+            if (isFirst) {
                 product.setImage(url);
                 productService.save(product);
                 isFirst = false;
