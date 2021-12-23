@@ -21,8 +21,10 @@ public class ImageUtil {
 
     //Save the image to Aliyun OSS and return the url
     public static String postImage(String baseStr, String objectName) {
+        String imgFormat = baseStr.substring(baseStr.indexOf("/") + 1, baseStr.indexOf(";"));
+        baseStr = baseStr.substring(baseStr.indexOf(",") + 1);
+        objectName = objectName + "." + imgFormat;
         String url = "https://sustech-store.oss-cn-shenzhen.aliyuncs.com/" + objectName;
-        baseStr = baseStr.substring(23);
         OSS ossClient = null;
         try {
             // 创建OSSClient实例。
@@ -71,7 +73,6 @@ public class ImageUtil {
                 result.append(Integer.toHexString(new Random().nextInt(16)));
             }
             objectName += result.toString().toUpperCase();
-            objectName += ".jpg";
         } catch (Exception e) {
             e.printStackTrace();
         }

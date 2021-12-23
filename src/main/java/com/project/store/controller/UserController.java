@@ -74,10 +74,12 @@ public class UserController {
         if (user == null) {
             return new Result<>(ResultCode.UNREGISTERED, null);
         }
+        if (StpUtil.isDisable(user.getUid())){
+            return new Result<>(ResultCode.DISABLED, null);
+        }
         if (!Objects.equals(user.getPassword(), SaSecureUtil.md5(userLoginParam.getPassword()))) {
             return new Result<>(ResultCode.WRONG_PASSWORD, null);
         }
-
         StpUtil.login(user.getUid());
         return new Result<>(StpUtil.getTokenInfo());
     }
@@ -93,6 +95,28 @@ public class UserController {
     public String logout() {
         StpUtil.logout();
         return "登出成功";
+    }
+
+    @ApiOperation("踢人下线")
+    @GetMapping("/kickout/{uid}")
+    public String kickout(@PathVariable Integer uid){
+        StpUtil.kickout(uid);
+        return "踢人成功";
+    }
+
+    @ApiOperation("封号")
+    @GetMapping("/disableUser/{uid}/{hour}")
+    public String disableUser(@PathVariable Integer uid, @PathVariable Integer hour){
+        StpUtil.kickout(uid);
+        StpUtil.disable(uid, hour * 3600);
+        return String.format("封禁用户%d, %d小时", uid, hour);
+    }
+
+    @ApiOperation("封号")
+    @GetMapping("/untieDisableUser/{uid}")
+    public String untieDisableUser(@PathVariable Integer uid){
+        StpUtil.untieDisable(uid);
+        return "解封成功";
     }
 
     @ApiOperation(value = "获取用户详细信息", notes = "根据uid来获取用户详细信息")
@@ -147,11 +171,12 @@ public class UserController {
 
     @ApiOperation("添加用户头像")
     @PostMapping("/addUserIcon")
-    public boolean addUserIcon(@RequestBody String baseStr) {
+    public boolean addUserIcon(@RequestBody String[] baseStr) {
         // Random generate a file name
+        String base = baseStr[0];
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         String objectName = ImageUtil.generateObjectName(user.getUid().toString(), 4);
-        String url = ImageUtil.postImage(baseStr, objectName);
+        String url = ImageUtil.postImage(base, objectName);
         user.setIcon(url);
         return userService.saveOrUpdate(user);
     }
