@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.project.store.enums.ProductStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -74,6 +75,9 @@ public class Product implements Serializable {
      * 文件名称
      */
     private String image;
+
+
+    private ProductStatus productStatus;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
