@@ -15,6 +15,8 @@ public enum ResultCode {
 
     WRONG_PASSWORD(1004, "密码错误"),
 
+    DISABLED(1005, "账号已被封号"),
+
     ERROR(5000, "未知错误");
 
     private int code;
