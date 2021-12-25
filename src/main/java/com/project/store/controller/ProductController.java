@@ -3,6 +3,7 @@ package com.project.store.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.project.store.dto.ProductDto;
+import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.project.store.entity.ProductImage;
 import com.project.store.entity.User;
@@ -85,9 +86,9 @@ public class ProductController {
     }
 
     @ApiOperation(value = "搜索商品获取所有未售出VO", notes = "默认按时间排序")
-    @GetMapping("/search/{key}")
-    public List<ProductVO> search(@PathVariable String key) {
-        return productService.searchAllProductVO(key);
+    @PostMapping("/search")
+    public List<ProductVO> search(@RequestBody SearchFilter searchFilter) {
+        return productService.searchAllProductVO(searchFilter);
     }
 
     @ApiOperation(value = "添加商品")

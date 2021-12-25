@@ -1,16 +1,15 @@
 package com.project.store.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
 import com.project.store.service.ProductService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.store.vo.ProductVO;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -128,12 +128,37 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public List<ProductVO> searchAllProductVO(String key) {
+    public List<ProductVO> searchAllProductVO(SearchFilter searchFilter) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        wrapper.like("name", key);
+        wrapper.like("name", searchFilter.getKey());
         wrapper.orderByDesc("update_time");
         wrapper.eq("status", 0);
+
+        if (searchFilter.getMaxPrice() != 0) {
+            wrapper.le("price", searchFilter.getMaxPrice());
+        }
+        if (searchFilter.getMinPrice() != 0) {
+            wrapper.ge("price", searchFilter.getMinPrice());
+        }
+
         List<Product> productList = productMapper.selectList(wrapper);
+        if (searchFilter.getCreditLevel() != 0) {
+            Double credit = searchFilter.getCreditLevel();
+            if (credit >= 4) {
+                productList = productList.stream().filter(p ->
+                        userMapper.selectById(p.getOwnerId()).getCredit() >= 100
+                ).collect(Collectors.toList());
+            } else if (credit >= 2.5) {
+                productList = productList.stream().filter(p ->
+                        userMapper.selectById(p.getOwnerId()).getCredit() >= 50
+                ).collect(Collectors.toList());
+            } else {
+                productList = productList.stream().filter(p ->
+                        userMapper.selectById(p.getOwnerId()).getCredit() >= 50
+                ).collect(Collectors.toList());
+            }
+        }
+
         List<ProductVO> productVOList = new ArrayList<>();
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();

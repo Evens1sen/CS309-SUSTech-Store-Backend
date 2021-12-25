@@ -71,7 +71,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         Orders orders = ordersMapper.selectById(id);
         OrdersVO ordersVO = new OrdersVO();
         Product product = productMapper.selectById(orders.getProductId());
-        User buyer = userMapper.selectById(id);
+        User buyer = userMapper.selectById(orders.getBuyerId());
         User owner = userMapper.selectById(product.getOwnerId());
         ordersVO.setId(orders.getId());
         ordersVO.setBuyerNickName(buyer.getNickName());
@@ -82,6 +82,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         ordersVO.setSerialnumber(orders.getSerialnumber());
         ordersVO.setStatus(orders.getStatus());
         ordersVO.setCreateTime(orders.getCreateTime());
+        ordersVO.setExpireTime(orders.getCreateTime().plusHours(1));
 
         return ordersVO;
     }
@@ -107,6 +108,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             ordersVO.setSerialnumber(orders.getSerialnumber());
             ordersVO.setStatus(orders.getStatus());
             ordersVO.setCreateTime(orders.getCreateTime());
+            ordersVO.setExpireTime(orders.getCreateTime().plusHours(1));
             ordersVOList.add(ordersVO);
         }
 
@@ -134,6 +136,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             ordersVO.setSerialnumber(orders.getSerialnumber());
             ordersVO.setStatus(orders.getStatus());
             ordersVO.setCreateTime(orders.getCreateTime());
+            ordersVO.setExpireTime(orders.getCreateTime().plusHours(1));
             ordersVOList.add(ordersVO);
         }
 

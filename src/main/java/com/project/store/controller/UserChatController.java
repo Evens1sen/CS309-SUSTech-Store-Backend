@@ -37,10 +37,9 @@ public class UserChatController {
     private UserService userService;
 
     @ApiOperation(value = "获取登录用户与卖家的聊天记录(传入卖家uid)")
-    @GetMapping("/findAll/{id}")
-    public List<UserChat> findall( @PathVariable Integer id){
-        User buyer = userService.getById(StpUtil.getLoginIdAsInt());
-        return userChatService.findAllUserChatByUserId(buyer.getUid(),id);
+    @GetMapping("/findAll/{buy_id}/{sell_id}")
+    public List<UserChat> findall( @PathVariable Integer buy_id,@PathVariable Integer sell_id){
+        return userChatService.findAllUserChatByUserId(buy_id,sell_id);
     }
 
     @ApiOperation(value = "添加上传用户与卖家的聊天记录")

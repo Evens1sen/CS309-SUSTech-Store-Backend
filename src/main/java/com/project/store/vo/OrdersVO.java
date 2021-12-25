@@ -1,7 +1,5 @@
 package com.project.store.vo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.project.store.enums.OrdersStatus;
 import lombok.Data;
 
@@ -26,4 +24,6 @@ public class OrdersVO {
     private OrdersStatus status;
 
     private LocalDateTime createTime;
+
+    private LocalDateTime expireTime;
 }
