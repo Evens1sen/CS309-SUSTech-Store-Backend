@@ -389,15 +389,15 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user`
     DISABLE KEYS */;
 INSERT INTO `user`
-VALUES
-       (11911001, 'cgn', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '1044732267@qq.com', '13366055011', '2.jpg', 0, 100,
+VALUES (11911001, 'cgn', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '1044732267@qq.com', '13366055011', '2.jpg', 0, 100,
         '2020-05-18 06:22:34', '2020-05-18 06:22:37'),
        (11911003, 'hyl', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '1044732267@qq.com', '13366055010', '3.jpg', 0, 100,
         '2020-05-18 06:22:35', '2020-05-18 06:22:37'),
        (11911004, 'ck', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '1044732267@qq.com', '13366055010', '4.jpg', 0, 100,
         '2020-05-18 06:22:36', '2020-05-18 06:22:38');
 INSERT INTO `user`
-    VALUE (11912919, 'mhy', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '11912919@mail.sustech.edu.cn', '13366055010', '0.jpg', 648, 100,
+    VALUE (11912919, 'mhy', 'b45cffe084dd3d20d928bee85e7b0f21', 1, '11912919@mail.sustech.edu.cn', '13366055010',
+           '0.jpg', 648, 100,
            '2021-11-23 06:22:36', '2021-11-23 06:22:36');
 /*!40000 ALTER TABLE `user`
     ENABLE KEYS */;
@@ -471,41 +471,41 @@ insert into user_chat value (2, 11911001, 11911003, 'sdasdafd', CURRENT_TIMESTAM
 DROP TABLE IF EXISTS orders_comment;
 create table orders_comment
 (
-    id int auto_increment,
-    orders_id int not null ,
-    buy_id int not null ,
-    sell_id int not null,
-    comments  varchar(255) ,
-    star double not null ,
+    id        int auto_increment,
+    orders_id int      not null,
+    buy_id    int      not null,
+    sell_id   int      not null,
+    comments  varchar(255),
+    star      double   not null,
     create_at datetime not null comment '时间',
-        primary key (id),
-    foreign key (orders_id) references orders(id),
+    primary key (id),
+    foreign key (orders_id) references orders (id),
     foreign key (buy_id) references user (uid),
-    foreign key (sell_id) references user(uid)
-)ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+    foreign key (sell_id) references user (uid)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
-insert into Orders_Comment value (1,101,11912919,11912725,'原批觉得很淦',4.5,CURRENT_TIMESTAMP);
-insert into Orders_Comment value (2,102,11912919,11912725,'夹心糖就是你',5,CURRENT_TIMESTAMP);
+insert into Orders_Comment value (1, 101, 11912919, 11912725, '原批觉得很淦', 4.5, CURRENT_TIMESTAMP);
+insert into Orders_Comment value (2, 102, 11912919, 11912725, '夹心糖就是你', 5, CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS product_comment;
 create table product_comment
 (
-    id int auto_increment,
-    product_id int not null ,
-    buyer_id int not null ,
-    comments varchar(255),
-    create_at datetime not null comment '时间',
+    id         int auto_increment,
+    product_id int      not null,
+    buyer_id   int      not null,
+    comments   varchar(255),
+    create_at  datetime not null comment '时间',
     primary key (id),
-    foreign key (product_id) references product(id),
-    foreign key (buyer_id) references user(uid)
-)ENGINE = InnoDB
-DEFAULT CHARSET  = utf8;
+    foreign key (product_id) references product (id),
+    foreign key (buyer_id) references user (uid)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
-INSERT INTO product_comment value (1,740,11912919,'一般，换一批',CURRENT_TIMESTAMP);
-INSERT INTO product_comment value (2,740,11912919,'一般，ahjksf',CURRENT_TIMESTAMP);
-INSERT INTO product_comment value (3,740,11912919,'一agfd',CURRENT_TIMESTAMP);
-INSERT INTO product_comment value (4,740,11912919,'一般，s',CURRENT_TIMESTAMP);
+INSERT INTO product_comment value (1, 740, 11912919, '一般，换一批', CURRENT_TIMESTAMP);
+INSERT INTO product_comment value (2, 740, 11912919, '一般，ahjksf', CURRENT_TIMESTAMP);
+INSERT INTO product_comment value (3, 740, 11912919, '一agfd', CURRENT_TIMESTAMP);
+INSERT INTO product_comment value (4, 740, 11912919, '一般，s', CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS `errand`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
