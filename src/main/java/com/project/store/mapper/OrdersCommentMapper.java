@@ -1,7 +1,8 @@
 package com.project.store.mapper;
 
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.project.store.entity.Credit;
+import com.project.store.entity.OrdersComment;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,6 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface CreditMapper extends BaseMapper<Credit> {
+public interface OrdersCommentMapper extends BaseMapper<OrdersComment> {
 
 }

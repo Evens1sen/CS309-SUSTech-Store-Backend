@@ -2,17 +2,17 @@ package com.project.store.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.project.store.entity.Credit;
+import com.project.store.entity.OrdersComment;
 import com.project.store.entity.User;
-import com.project.store.mapper.CreditMapper;
+import com.project.store.mapper.OrdersCommentMapper;
 import com.project.store.mapper.OrdersMapper;
 import com.project.store.mapper.UserMapper;
-import com.project.store.service.CreditService;
+import com.project.store.service.OrdersCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreditServiceImpl extends ServiceImpl<CreditMapper, Credit> implements CreditService {
+public class OrdersCommentServiceImpl extends ServiceImpl<OrdersCommentMapper, OrdersComment> implements OrdersCommentService {
 
     @Autowired
     private UserMapper userMapper;
@@ -41,6 +41,14 @@ public class CreditServiceImpl extends ServiceImpl<CreditMapper, Credit> impleme
         User user = userMapper.selectById(id);
         user.setCredit(user.getCredit()+(int)(star-4)*2);
         return user.getCredit();
+    }
+
+    @Override
+    public String commentOrders(Integer id, String comment, Double star) {
+        User user = userMapper.selectById(id);
+        user.setCredit(user.getCredit()+(int)(star-4)*2);
+
+        return null;
     }
 
 }
