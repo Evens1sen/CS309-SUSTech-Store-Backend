@@ -81,7 +81,7 @@ public class ErrandController {
 
     @ApiOperation(value = "根据id获取跑腿VO")
     @GetMapping("/findErrandVOById/{id}")
-    public ErrandVO findErrandVOById(@PathVariable Integer id){
+    public ErrandVO findErrandVOById(@PathVariable Integer id) {
         Errand errand = errandService.getById(id);
         ErrandVO errandVO = new ErrandVO();
         User owner = userService.getById(errand.getOwnerId());
