@@ -32,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean sendNotification(String email) {
-        String mess = "亲，你有新的订单，请及时上号处理";
+        String mess = "亲，你的商品被拍下，请及时上号处理";
         return sendEmail(email, mess);
     }
 
@@ -61,6 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
+        assert sf != null;
         sf.setTrustAllHosts(true);
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.ssl.socketFactory", sf);

@@ -61,14 +61,34 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orders.setSerialnumber(seriaNumber);
         ordersMapper.insert(orders);
 
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.eq("serialnumber", seriaNumber);
         return ordersMapper.selectOne(wrapper).getId();
     }
 
     @Override
+    public OrdersVO findOrdersVOByOrdersId(Integer id) {
+        Orders orders = ordersMapper.selectById(id);
+        OrdersVO ordersVO = new OrdersVO();
+        Product product = productMapper.selectById(orders.getProductId());
+        User buyer = userMapper.selectById(id);
+        User owner = userMapper.selectById(product.getOwnerId());
+        ordersVO.setId(orders.getId());
+        ordersVO.setBuyerNickName(buyer.getNickName());
+        ordersVO.setSellerNickName(owner.getNickName());
+        ordersVO.setProductName(product.getName());
+        ordersVO.setImage(product.getImage());
+        ordersVO.setCost(orders.getCost());
+        ordersVO.setSerialnumber(orders.getSerialnumber());
+        ordersVO.setStatus(orders.getStatus());
+        ordersVO.setCreateTime(orders.getCreateTime());
+
+        return ordersVO;
+    }
+
+    @Override
     public List<OrdersVO> findAllOrdersVOByBuyerID(Integer id) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
         wrapper.eq("buyer_id", id);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);
@@ -95,7 +115,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
 
     @Override
     public List<OrdersVO> findAllOrdersVOByOwnerID(Integer ownerId) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
         wrapper.eq("owner_id", ownerId);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);

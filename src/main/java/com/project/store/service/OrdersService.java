@@ -24,6 +24,8 @@ public interface OrdersService extends IService<Orders> {
 
     Integer save(Product product, String useAddress, User user);
 
+    OrdersVO findOrdersVOByOrdersId(Integer id);
+
     List<OrdersVO> findAllOrdersVOByBuyerID(Integer buyerId);
 
     List<OrdersVO> findAllOrdersVOByOwnerID(Integer ownerId);

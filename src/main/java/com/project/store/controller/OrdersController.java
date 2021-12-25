@@ -4,10 +4,13 @@ package com.project.store.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.project.store.entity.Cart;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.enums.OrdersStatus;
+import com.project.store.enums.ProductStatus;
+import com.project.store.service.CartService;
 import com.project.store.service.OrdersService;
 import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
@@ -41,7 +44,9 @@ public class OrdersController {
     @Autowired
     private UserService userService;
 
-    //FIXME: Add more restrictions on orders, and money
+    @Autowired
+    private CartService cartService;
+
     @ApiOperation(value = "用户添加订单，订单状态为0")
     @PostMapping("/add/{productId}/{useAddress}")
     public Integer add(@PathVariable Integer productId, @PathVariable String useAddress) {
@@ -53,15 +58,19 @@ public class OrdersController {
     //FIXME: Add more restrictions on the users
     @ApiOperation(value = "用户支付订单，订单状态改变为1", notes = "仅对用户扣款")
     @PutMapping("/payById/{id}")
-    public boolean payById(@PathVariable String id) {
+    public boolean payById(@PathVariable Integer id) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         Orders orders = ordersService.getById(id);
+        Product product = productService.getById(orders.getProductId());
         boolean result = userService.pay(user.getUid(), orders.getCost());
         if (!result) {
             return false;
         }
         orders.setStatus(OrdersStatus.PAYED);
         ordersService.saveOrUpdate(orders);
+
+        product.setStatus(ProductStatus.SOLD);
+        productService.saveOrUpdate(product);
 
         User owner = userService.getById(orders.getOwnerId());
         userService.sendNotification(owner.getEmail());
@@ -74,7 +83,7 @@ public class OrdersController {
     public boolean confirmById(@PathVariable String id) {
         Orders orders = ordersService.getById(id);
         if (orders.getStatus() == OrdersStatus.PAYED) {
-            UpdateWrapper wrapper = new UpdateWrapper();
+            UpdateWrapper<Orders> wrapper = new UpdateWrapper<>();
             wrapper.set("status", 2);
             wrapper.eq("id", id);
             return ordersService.update(wrapper);
@@ -87,14 +96,27 @@ public class OrdersController {
     public boolean closeById(@PathVariable Integer id) {
         Orders orders = ordersService.getById(id);
         if (orders.getStatus() == OrdersStatus.SHIPPED) {
-            UpdateWrapper wrapper = new UpdateWrapper();
+            UpdateWrapper<Orders> wrapper = new UpdateWrapper<>();
             wrapper.set("status", 3);
             wrapper.eq("id", id);
             ordersService.update(wrapper);
-            wrapper = new UpdateWrapper();
-            wrapper.set("balance", orders.getCost());
-            wrapper.eq("uid", orders.getOwnerId());
-            return userService.update(wrapper);
+
+            User owner = userService.getById(orders.getOwnerId());
+            owner.setBalance(owner.getBalance()+ orders.getCost());
+            userService.saveOrUpdate(owner);
+
+            Product product = productService.getById(orders.getProductId());
+            product.setStatus(ProductStatus.SOLD);
+
+            QueryWrapper<Cart> wrapper2 = new QueryWrapper<>();
+            wrapper2.eq("user_id", orders.getBuyerId());
+            wrapper2.eq("product_id", orders.getProductId());
+            Cart cart = cartService.getOne(wrapper2);
+            if (cart != null) {
+                cartService.removeById(cart.getId());
+            }
+
+            return productService.saveOrUpdate(product);
         }
         return false;
     }
@@ -105,11 +127,17 @@ public class OrdersController {
         return ordersService.removeById(id);
     }
 
+    @ApiOperation(value = "根据订单号获取订单VO")
+    @GetMapping("/getOrdersVOByOrderId/{id}")
+    public OrdersVO getOrdersVOByOrderId(@PathVariable Integer id) {
+        return ordersService.findOrdersVOByOrdersId(id);
+    }
+
     @ApiOperation(value = "获取当前登录用户所有购买订单")
     @GetMapping("/listBuy")
     public List<Orders> listBuy() {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.eq("buyer_id", user.getUid());
         return ordersService.list(wrapper);
     }
@@ -125,7 +153,7 @@ public class OrdersController {
     @GetMapping("/listSell")
     public List<Orders> listSell() {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.eq("owner_id", user.getUid());
         return ordersService.list(wrapper);
     }

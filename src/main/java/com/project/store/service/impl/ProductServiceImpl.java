@@ -63,9 +63,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         } else {
             levelStr = "three";
         }
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("categorylevel" + levelStr + "_id", categoryId);
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();
@@ -90,8 +91,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     public List<ProductVO> findAllProductVO() {
         List<ProductVO> productVOList = new ArrayList<>();
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();
@@ -109,6 +111,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         Page<Product> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         productMapper.selectPage(page, wrapper);
 
         List<ProductVO> productVOList = new ArrayList<>();
@@ -126,9 +129,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public List<ProductVO> searchAllProductVO(String key) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.like("name", key);
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         List<ProductVO> productVOList = new ArrayList<>();
         for (Product product : productList) {
