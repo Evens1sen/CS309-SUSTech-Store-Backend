@@ -6,6 +6,7 @@ import com.project.store.dto.ProductDto;
 import com.project.store.entity.Product;
 import com.project.store.entity.ProductImage;
 import com.project.store.entity.User;
+import com.project.store.enums.ProductStatus;
 import com.project.store.service.ProductImageService;
 import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
@@ -49,10 +50,16 @@ public class ProductController {
         return productService.list();
     }
 
-    @ApiOperation(value = "获取所有商品VO", notes = "默认按时间排序")
+    @ApiOperation(value = "获取所有未售出商品VO", notes = "默认按时间排序")
     @GetMapping("/listProductVO")
     public List<ProductVO> listProductVO() {
         return productService.findAllProductVO();
+    }
+
+    @ApiOperation(value = "获取未售出分页商品VO", notes = "默认按时间排序")
+    @GetMapping("/findProductVOPage/{pageNum}/{pageSize}")
+    public List<ProductVO> findProductVOPage(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {
+        return productService.findProductVOPage(pageNum, pageSize);
     }
 
     @ApiOperation(value = "根据分类id获取商品列表", notes = "默认按时间排序")
@@ -77,7 +84,7 @@ public class ProductController {
         return productService.findProductVOById(id);
     }
 
-    @ApiOperation(value = "搜索商品获取所有VO", notes = "默认按时间排序")
+    @ApiOperation(value = "搜索商品获取所有未售出VO", notes = "默认按时间排序")
     @GetMapping("/search/{key}")
     public List<ProductVO> search(@PathVariable String key) {
         return productService.searchAllProductVO(key);
@@ -92,10 +99,10 @@ public class ProductController {
         BeanUtils.copyProperties(productDto, product);
 
         boolean isFirst = true;
-        for (String baseStr : productDto.getImages()){
+        for (String baseStr : productDto.getImages()) {
             String objectName = ImageUtil.generateObjectName(productDto.getId().toString(), 8);
             String url = ImageUtil.postImage(baseStr, objectName);
-            if (isFirst){
+            if (isFirst) {
                 product.setImage(url);
                 productService.save(product);
                 isFirst = false;
@@ -112,6 +119,14 @@ public class ProductController {
     @ApiOperation(value = "修改商品信息")
     @PutMapping("/update/{id}")
     public boolean update(@RequestBody Product product) {
+        return productService.saveOrUpdate(product);
+    }
+
+    @ApiOperation(value = "下架商品")
+    @PutMapping("unShelfById/{id}")
+    public boolean unShelfById(@PathVariable Integer id){
+        Product product = productService.getById(id);
+        product.setStatus(ProductStatus.OFF_SHELF);
         return productService.saveOrUpdate(product);
     }
 

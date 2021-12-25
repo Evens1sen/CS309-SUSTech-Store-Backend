@@ -49,7 +49,7 @@ public class ErrandController {
     @ApiOperation(value = "获取所有分类列表")
     @GetMapping("/list/{type}")
     public List<Errand> listByType(@PathVariable Integer type) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("type", type);
         return errandService.list(wrapper);
     }
@@ -58,7 +58,7 @@ public class ErrandController {
     @GetMapping("/listReleased")
     public List<Errand> listReleased() {
         User owner = userService.getById(StpUtil.getLoginIdAsInt());
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("owner_id", owner.getUid());
         return errandService.list(wrapper);
     }
@@ -67,7 +67,7 @@ public class ErrandController {
     @GetMapping("/listTaken")
     public List<Errand> listTaken() {
         User buyer = userService.getById(StpUtil.getLoginIdAsInt());
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("buyer_id", buyer.getUid());
         return errandService.list(wrapper);
     }
@@ -81,12 +81,11 @@ public class ErrandController {
     @ApiOperation(value = "搜索跑腿", notes = "默认按时间排序")
     @GetMapping("/search/{key}")
     public List<Errand> search(@PathVariable String key) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.like("name", key);
         wrapper.orderByDesc("update_time");
-        List<Errand> errandList = errandService.list(wrapper);
 
-        return errandList;
+        return errandService.list(wrapper);
     }
 
     @ApiOperation(value = "添加跑腿")

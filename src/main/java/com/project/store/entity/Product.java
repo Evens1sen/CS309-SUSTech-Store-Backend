@@ -76,8 +76,7 @@ public class Product implements Serializable {
      */
     private String image;
 
-
-    private ProductStatus productStatus;
+    private ProductStatus status;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

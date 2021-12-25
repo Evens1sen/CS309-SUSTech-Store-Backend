@@ -1,6 +1,8 @@
 package com.project.store.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.mapper.ProductMapper;
@@ -61,9 +63,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         } else {
             levelStr = "three";
         }
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("categorylevel" + levelStr + "_id", categoryId);
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();
@@ -88,8 +91,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     public List<ProductVO> findAllProductVO() {
         List<ProductVO> productVOList = new ArrayList<>();
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();
@@ -103,10 +107,32 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
+    public List<ProductVO> findProductVOPage(Integer pageNum, Integer pageSize) {
+        Page<Product> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
+        productMapper.selectPage(page, wrapper);
+
+        List<ProductVO> productVOList = new ArrayList<>();
+        List<Product> productList = page.getRecords();
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+
+        return productVOList;
+    }
+
+    @Override
     public List<ProductVO> searchAllProductVO(String key) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.like("name", key);
         wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
         List<Product> productList = productMapper.selectList(wrapper);
         List<ProductVO> productVOList = new ArrayList<>();
         for (Product product : productList) {
