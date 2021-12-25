@@ -8,11 +8,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author ${author}
@@ -25,10 +28,18 @@ public class UserChatServiceImpl extends ServiceImpl<UserChatMapper, UserChat> i
 
     @Override
     public List<UserChat> findAllUserChatByUserId(Integer buy_id, Integer sell_id) {
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("buy_id",buy_id);
-        wrapper.eq("sell_id",sell_id);
-        List list = userChatMapper.selectList(wrapper);
-       return userChatMapper.selectList(wrapper);
+        QueryWrapper<UserChat> wrapper = new QueryWrapper<>();
+        QueryWrapper<UserChat> wrapper2 = new QueryWrapper<>();
+        wrapper.eq("buy_id", buy_id);
+        wrapper.eq("sell_id", sell_id);
+        wrapper.orderByDesc("create_at");
+        wrapper.eq("buy_id", sell_id);
+        wrapper.eq("sell_id", buy_id);
+        wrapper.orderByDesc("create_at");
+        List<UserChat> list = userChatMapper.selectList(wrapper);
+        List<UserChat> list2 = userChatMapper.selectList(wrapper2);
+        list.addAll(list2);
+        list.sort(Comparator.comparing(UserChat::getCreateAt));
+        return list;
     }
 }

@@ -10,6 +10,7 @@ import com.project.store.service.UserService;
 import com.project.store.vo.ErrandVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,6 +77,19 @@ public class ErrandController {
     @GetMapping("/findById/{id}")
     public Errand findById(@PathVariable Integer id) {
         return errandService.getById(id);
+    }
+
+    @ApiOperation(value = "根据id获取跑腿VO")
+    @GetMapping("/findErrandVOById/{id}")
+    public ErrandVO findErrandVOById(@PathVariable Integer id){
+        Errand errand = errandService.getById(id);
+        ErrandVO errandVO = new ErrandVO();
+        User owner = userService.getById(errand.getOwnerId());
+        BeanUtils.copyProperties(errand, errandVO);
+        errandVO.setOwnerNickname(owner.getNickName());
+        errandVO.setOwnerIcon(owner.getIcon());
+
+        return errandVO;
     }
 
     @ApiOperation(value = "搜索跑腿", notes = "默认按时间排序")

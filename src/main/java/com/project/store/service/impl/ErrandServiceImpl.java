@@ -47,7 +47,7 @@ public class ErrandServiceImpl extends ServiceImpl<ErrandMapper, Errand> impleme
     @Override
     public List<ErrandVO> findAllErrandVO() {
         List<ErrandVO> errandVOList = new ArrayList<>();
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
         List<Errand> errandList = errandMapper.selectList(wrapper);
         for (Errand errand : errandList) {

@@ -1,6 +1,7 @@
 package com.project.store.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.project.store.mapper.ProductMapper;
@@ -29,5 +30,5 @@ public interface ProductService extends IService<Product> {
 
     List<ProductVO> findProductVOPage(Integer pageNum, Integer pageSize);
 
-    List<ProductVO> searchAllProductVO(String key);
+    List<ProductVO> searchAllProductVO(SearchFilter searchFilter);
 }
