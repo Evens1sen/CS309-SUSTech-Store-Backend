@@ -43,14 +43,6 @@ public class OrdersCommentController {
         return ordersCommentService.getDiscount(buyer.getUid());
     }
 
-//    @ApiOperation(value = "给用户评价时增减信誉")
-//    @PutMapping("updateOrdersCommentByStar/{sell_id}/{star}")
-//    public boolean updateOrdersComment(@PathVariable Integer sell_id,@PathVariable Double star){
-//        User user = userService.getById(sell_id);
-//        int credit =  ordersCommentService.updateCredit(user.getUid(),star);
-//        user.setCredit(credit);
-//        return userService.saveOrUpdate(user);
-//    }
 
     @ApiOperation(value = "对订单进行评价同时更新信誉")
     @PostMapping("commentOrders/{orders_id}/{sell_id}/{comment}/{star}")
@@ -60,11 +52,11 @@ public class OrdersCommentController {
         OrdersComment ordersComment = new OrdersComment();
         User buyer = userService.getById(StpUtil.getLoginIdAsInt());
         User owner = userService.getById(sell_id);
-        owner.setCredit(ordersCommentService.updateCredit(sell_id, star));
-        buyer.setCredit(buyer.getCredit() + 100);
+        owner.setCredit(ordersCommentService.updateCredit(sell_id,star));
+        buyer.setCredit(buyer.getCredit()+10);
         userService.saveOrUpdate(buyer);
         userService.saveOrUpdate(owner);
-        ordersComment.setId(1);
+        ordersComment.setId(5);
         ordersComment.setStar(star);
         ordersComment.setComments(comment);
         ordersComment.setSell_id(sell_id);
