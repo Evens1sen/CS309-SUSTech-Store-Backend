@@ -39,16 +39,9 @@ public class OrdersCommentServiceImpl extends ServiceImpl<OrdersCommentMapper, O
     @Override
     public int updateCredit(Integer id,Double star){
         User user = userMapper.selectById(id);
-        user.setCredit(user.getCredit()+(int)(star-4)*2);
+        user.setCredit(user.getCredit()+(int)(star-4)*10);
         return user.getCredit();
     }
 
-    @Override
-    public String commentOrders(Integer id, String comment, Double star) {
-        User user = userMapper.selectById(id);
-        user.setCredit(user.getCredit()+(int)(star-4)*2);
-
-        return null;
-    }
 
 }
