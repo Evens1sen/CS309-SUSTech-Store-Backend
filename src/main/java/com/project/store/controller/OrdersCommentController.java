@@ -31,14 +31,14 @@ public class OrdersCommentController {
 
     @ApiOperation(value = "获取用户信誉/{id}")
     @GetMapping("/getOrdersComment/{id}")
-    public int getOrdersComment(@PathVariable Integer id){
+    public int getOrdersComment(@PathVariable Integer id) {
         User buyer = userService.getById(id);
         return ordersCommentService.queryCredit(buyer.getUid());
     }
 
     @ApiOperation(value = "获取折扣力度")
     @GetMapping("/getDiscount/{id}")
-    public double getDiscount(@PathVariable Integer id){
+    public double getDiscount(@PathVariable Integer id) {
         User buyer = userService.getById(id);
         return ordersCommentService.getDiscount(buyer.getUid());
     }
@@ -54,14 +54,14 @@ public class OrdersCommentController {
 
     @ApiOperation(value = "对订单进行评价同时更新信誉")
     @PostMapping("commentOrders/{orders_id}/{sell_id}/{comment}/{star}")
-    public boolean commentOrders(@PathVariable Integer orders_id,@PathVariable Integer sell_id, @PathVariable String comment,@PathVariable Double star){
+    public boolean commentOrders(@PathVariable Integer orders_id, @PathVariable Integer sell_id, @PathVariable String comment, @PathVariable Double star) {
         // 买家每完成一次订单， 给他加100分
         // 买家每次被评论后， 更新卖家信誉
         OrdersComment ordersComment = new OrdersComment();
         User buyer = userService.getById(StpUtil.getLoginIdAsInt());
         User owner = userService.getById(sell_id);
-        owner.setCredit(ordersCommentService.updateCredit(sell_id,star));
-        buyer.setCredit(buyer.getCredit()+100);
+        owner.setCredit(ordersCommentService.updateCredit(sell_id, star));
+        buyer.setCredit(buyer.getCredit() + 100);
         userService.saveOrUpdate(buyer);
         userService.saveOrUpdate(owner);
         ordersComment.setId(1);
