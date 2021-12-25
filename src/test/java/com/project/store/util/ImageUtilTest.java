@@ -8,7 +8,6 @@ class ImageUtilTest {
 
     @Test
     void test(){
-
     }
 
 }

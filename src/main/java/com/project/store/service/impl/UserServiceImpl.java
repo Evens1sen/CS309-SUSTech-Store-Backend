@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.security.GeneralSecurityException;
 import java.util.Properties;
 import java.util.Random;
+import java.security.GeneralSecurityException;
+
 
 
 /**
@@ -66,6 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.ssl.socketFactory", sf);
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("457894974@qq.com", "qvsbwuuaunohbiib"); //发件人邮件用户名、密码
             }
