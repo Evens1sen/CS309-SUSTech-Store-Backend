@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.project.store.enums.ProductStatus;
+import com.project.store.enums.ProductType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -52,11 +53,6 @@ public class Product implements Serializable {
     private Integer ownerId;
 
     /**
-     * 库存
-     */
-//    private Integer stock;
-
-    /**
      * 分类1
      */
     private Integer categoryleveloneId;
@@ -77,6 +73,8 @@ public class Product implements Serializable {
     private String image;
 
     private ProductStatus status;
+
+    private ProductType type;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
