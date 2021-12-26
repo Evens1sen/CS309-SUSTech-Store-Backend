@@ -52,10 +52,10 @@ public class OrdersController {
     public Integer add(@PathVariable Integer productId, @PathVariable String useAddress) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         Product product = productService.getById(productId);
+        product.setStatus(ProductStatus.SOLD);
         return ordersService.save(product, useAddress, user);
     }
 
-    //FIXME: Add more restrictions on the users
     @ApiOperation(value = "用户支付订单，订单状态改变为1", notes = "仅对用户扣款")
     @PutMapping("/payById/{id}")
     public boolean payById(@PathVariable Integer id) {
@@ -102,7 +102,7 @@ public class OrdersController {
             ordersService.update(wrapper);
 
             User owner = userService.getById(orders.getOwnerId());
-            owner.setBalance(owner.getBalance()+ orders.getCost());
+            owner.setBalance(owner.getBalance() + orders.getCost());
             userService.saveOrUpdate(owner);
 
             Product product = productService.getById(orders.getProductId());

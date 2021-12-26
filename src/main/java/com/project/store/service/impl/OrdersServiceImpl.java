@@ -77,6 +77,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         ordersVO.setBuyerNickName(buyer.getNickName());
         ordersVO.setSellerNickName(owner.getNickName());
         ordersVO.setProductName(product.getName());
+        ordersVO.setProductId(product.getId());
         ordersVO.setImage(product.getImage());
         ordersVO.setCost(orders.getCost());
         ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -103,6 +104,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             ordersVO.setBuyerNickName(buyer.getNickName());
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
+            ordersVO.setProductId(product.getId());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -125,12 +127,13 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         for (Orders orders : ordersList) {
             OrdersVO ordersVO = new OrdersVO();
             Product product = productMapper.selectById(orders.getProductId());
-            User buyer = userMapper.selectById(ownerId);
-            User owner = userMapper.selectById(product.getOwnerId());
+            User buyer = userMapper.selectById(orders.getBuyerId());
+            User owner = userMapper.selectById(orders.getOwnerId());
             ordersVO.setId(orders.getId());
             ordersVO.setBuyerNickName(buyer.getNickName());
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
+            ordersVO.setProductId(product.getId());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());

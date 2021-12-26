@@ -7,6 +7,7 @@ import com.project.store.entity.User;
 import com.project.store.enums.ErrandStatus;
 import com.project.store.service.ErrandService;
 import com.project.store.service.UserService;
+import com.project.store.util.ImageUtil;
 import com.project.store.vo.ErrandVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -41,7 +43,7 @@ public class ErrandController {
         return errandService.list();
     }
 
-    @ApiOperation(value = "获取所有跑腿VO")
+    @ApiOperation(value = "获取所有代接取跑腿VO")
     @GetMapping("/listVO")
     public List<ErrandVO> listVO() {
         return errandService.findAllErrandVO();
@@ -52,6 +54,7 @@ public class ErrandController {
     public List<Errand> listByType(@PathVariable Integer type) {
         QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("type", type);
+        wrapper.eq("status", 0);
         return errandService.list(wrapper);
     }
 
@@ -81,7 +84,7 @@ public class ErrandController {
 
     @ApiOperation(value = "根据id获取跑腿VO")
     @GetMapping("/findErrandVOById/{id}")
-    public ErrandVO findErrandVOById(@PathVariable Integer id){
+    public ErrandVO findErrandVOById(@PathVariable Integer id) {
         Errand errand = errandService.getById(id);
         ErrandVO errandVO = new ErrandVO();
         User owner = userService.getById(errand.getOwnerId());
@@ -97,6 +100,7 @@ public class ErrandController {
     public List<Errand> search(@PathVariable String key) {
         QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.like("name", key);
+        wrapper.eq("status", 0);
         wrapper.orderByDesc("update_time");
 
         return errandService.list(wrapper);
@@ -106,8 +110,22 @@ public class ErrandController {
     @PostMapping("/add")
     public boolean add(@RequestBody Errand errand) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
+        if (user.getBalance() < errand.getPrice()) {
+            return false;
+        }
+        user.setBalance(user.getBalance() - errand.getPrice());
+
         errand.setOwnerId(user.getUid());
         errand.setStatus(ErrandStatus.OPENED);
+        errand.setBuyerId(null);
+
+
+        if (!Objects.equals(errand.getImage(), "")) {
+            String objectName = ImageUtil.generateObjectName(errand.getId().toString(), 8);
+            String url = ImageUtil.postImage(errand.getImage(), objectName);
+            errand.setImage(url);
+        }
+
         return errandService.save(errand);
     }
 
@@ -126,6 +144,9 @@ public class ErrandController {
     public boolean confirm(@PathVariable Integer id) {
         Errand errand = errandService.getById(id);
         errand.setStatus(ErrandStatus.CLOSED);
+        User buyer = userService.getById(StpUtil.getLoginIdAsInt());
+        buyer.setBalance(buyer.getBalance() + errand.getPrice());
+
         return errandService.saveOrUpdate(errand);
     }
 

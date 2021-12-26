@@ -86,9 +86,9 @@ public class ProductController {
     }
 
     @ApiOperation(value = "搜索商品获取所有未售出VO", notes = "默认按时间排序")
-    @PostMapping("/search")
-    public List<ProductVO> search(@RequestBody SearchFilter searchFilter) {
-        return productService.searchAllProductVO(searchFilter);
+    @PostMapping("/search/{pageNum}/{pageSize}")
+    public List<ProductVO> search(@RequestBody SearchFilter searchFilter, @PathVariable Integer pageNum, @PathVariable Integer pageSize) {
+        return productService.searchAllProductVOPage(searchFilter, pageNum, pageSize);
     }
 
     @ApiOperation(value = "添加商品")
