@@ -1,6 +1,7 @@
 package com.project.store.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.store.StoreApplication;
@@ -8,6 +9,7 @@ import com.project.store.config.MyRedisConfig;
 import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
+import com.project.store.enums.ProductType;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
 import com.project.store.service.ProductService;
@@ -157,17 +159,28 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
 
     @Override
-    public List<ProductVO> searchAllProductVO(SearchFilter searchFilter) {
+    public List<ProductVO> searchAllProductVOPage(SearchFilter searchFilter, Integer pageNum, Integer pageSize) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.like("name", searchFilter.getKey());
         wrapper.orderByDesc("update_time");
         wrapper.eq("status", 0);
+
+
+        if (searchFilter.getCategoryId() != 0) {
+            wrapper.eq("categorylevelone_id", searchFilter.getCategoryId());
+        }
 
         if (searchFilter.getMaxPrice() != 0) {
             wrapper.le("price", searchFilter.getMaxPrice());
         }
         if (searchFilter.getMinPrice() != 0) {
             wrapper.ge("price", searchFilter.getMinPrice());
+        }
+
+        if (searchFilter.getProductType() == ProductType.BUY){
+            wrapper.eq("type", 1);
+        }else {
+            wrapper.eq("type", 0);
         }
 
         List<Product> productList = productMapper.selectList(wrapper);
@@ -188,6 +201,13 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             }
         }
 
+        if (productList.size() == 0){
+            return new ArrayList<>();
+        }else if (pageNum * pageSize + 1 >= productList.size()) {
+            productList = productList.subList((pageNum - 1) * pageSize, productList.size() - 1);
+        } else {
+            productList = productList.subList((pageNum - 1) * pageSize, pageNum * pageSize + 1);
+        }
         List<ProductVO> productVOList = new ArrayList<>();
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();

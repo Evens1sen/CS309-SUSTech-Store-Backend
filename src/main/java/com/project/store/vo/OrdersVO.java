@@ -15,6 +15,8 @@ public class OrdersVO {
 
     private String productName;
 
+    private Integer productId;
+
     private String image;
 
     private Float cost;

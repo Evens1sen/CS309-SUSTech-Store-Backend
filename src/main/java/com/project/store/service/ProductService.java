@@ -31,8 +31,8 @@ public interface ProductService extends IService<Product> {
 
     List<ProductVO> findProductVOPage(Integer pageNum, Integer pageSize);
 
-    List<ProductVO> searchAllProductVO(SearchFilter searchFilter);
-
     List<ProductVO> loadProductVOCache();
 
+    List<ProductVO> searchAllProductVOPage(SearchFilter searchFilter, Integer pageNum, Integer pageSize);
+  
 }
