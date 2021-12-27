@@ -1,7 +1,6 @@
 package com.project.store.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.store.dto.SearchFilter;
@@ -16,10 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -136,7 +132,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         wrapper.orderByDesc("update_time");
         wrapper.eq("status", 0);
 
-
         if (searchFilter.getCategoryId() != 0) {
             wrapper.eq("categorylevelone_id", searchFilter.getCategoryId());
         }
@@ -175,9 +170,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         if (productList.size() == 0){
             return new ArrayList<>();
         }else if (pageNum * pageSize + 1 >= productList.size()) {
-            productList = productList.subList((pageNum - 1) * pageSize, productList.size() - 1);
+            productList = productList.subList((pageNum - 1) * pageSize, productList.size());
         } else {
-            productList = productList.subList((pageNum - 1) * pageSize, pageNum * pageSize + 1);
+            productList = productList.subList((pageNum - 1) * pageSize, pageNum * pageSize);
         }
         List<ProductVO> productVOList = new ArrayList<>();
         for (Product product : productList) {

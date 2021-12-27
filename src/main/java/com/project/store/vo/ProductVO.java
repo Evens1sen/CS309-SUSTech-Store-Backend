@@ -1,5 +1,7 @@
 package com.project.store.vo;
 
+import com.project.store.enums.ProductStatus;
+import com.project.store.enums.ProductType;
 import lombok.Data;
 
 @Data
@@ -22,4 +24,5 @@ public class ProductVO {
 
     private String icon;
 
+    private ProductType type;
 }

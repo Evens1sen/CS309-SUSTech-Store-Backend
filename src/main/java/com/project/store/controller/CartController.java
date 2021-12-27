@@ -42,7 +42,7 @@ public class CartController {
         cart.setProductId(productId);
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         cart.setUserId(user.getUid());
-        return cartService.save(cart);
+        return cartService.saveOrUpdate(cart);
     }
 
     @ApiOperation(value = "获取收藏列表")

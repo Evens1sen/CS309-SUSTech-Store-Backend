@@ -9,7 +9,11 @@ import java.time.LocalDateTime;
 public class OrdersVO {
     private Integer id;
 
+    private Integer buyerId;
+
     private String buyerNickName;
+
+    private Integer sellerId;
 
     private String sellerNickName;
 

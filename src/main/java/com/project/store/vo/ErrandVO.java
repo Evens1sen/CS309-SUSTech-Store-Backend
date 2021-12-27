@@ -29,6 +29,8 @@ public class ErrandVO {
 
     private String image;
 
+    private ErrandStatus status;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
