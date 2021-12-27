@@ -1,17 +1,11 @@
 package com.project.store.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.project.store.dto.SearchFilter;
-import com.project.store.entity.Product;
 import com.project.store.mapper.ProductMapper;
-import com.project.store.vo.ProductVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 class ProductServiceTest {
@@ -23,13 +17,62 @@ class ProductServiceTest {
     ProductMapper productMapper;
 
     @Test
-    void test() {
-//        SearchFilter searchFilter = new SearchFilter();
-//        searchFilter.setKey("椰羊");
-//        searchFilter.setMaxPrice(400.0);
-//        searchFilter.setCreditLevel(0.0);
-//        searchFilter.setMinPrice(0.0);
-//        List<ProductVO> list = productService.searchAllProductVO(searchFilter);
-//        System.out.println(list.size());
+    void test1() {
+        long start1 = System.currentTimeMillis();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            productService.findProductVOById(random.nextInt(32) + 733);
+        }
+        long end1 =System.currentTimeMillis();
+
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 10; i++) {
+            productService.findProductVOById(random.nextInt(10) + 765);
+        }
+        long end2 =System.currentTimeMillis();
+        System.out.println("Redis time:");
+        System.err.println(end1-start1);
+        System.out.println("MySQL time:");
+        System.err.println(end2-start2);
+    }
+    
+    @Test
+    void test2(){
+        long start1 = System.currentTimeMillis();
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            productService.findProductVOById(random.nextInt(32) + 733);
+        }
+        long end1 =System.currentTimeMillis();
+
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            productService.findProductVOById(random.nextInt(10) + 765);
+        }
+        long end2 =System.currentTimeMillis();
+        System.out.println("Redis time:");
+        System.err.println(end1-start1);
+        System.out.println("MySQL time:");
+        System.err.println(end2-start2);
+    }
+
+    @Test
+    void test3(){
+        long start1 = System.currentTimeMillis();
+        Random random = new Random();
+        for (int i = 0; i < 1000; i++) {
+            productService.findProductVOById(random.nextInt(32) + 733);
+        }
+        long end1 =System.currentTimeMillis();
+
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            productService.findProductVOById(random.nextInt(10) + 765);
+        }
+        long end2 =System.currentTimeMillis();
+        System.out.println("Redis time:");
+        System.err.println(end1-start1);
+        System.out.println("MySQL time:");
+        System.err.println(end2-start2);
     }
 }
