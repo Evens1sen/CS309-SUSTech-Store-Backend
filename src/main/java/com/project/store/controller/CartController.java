@@ -3,12 +3,11 @@ package com.project.store.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.project.store.entity.Cart;
-import com.project.store.entity.Product;
 import com.project.store.entity.User;
+import com.project.store.enums.ProductType;
 import com.project.store.service.CartService;
 import com.project.store.service.UserService;
 import com.project.store.vo.CartVO;
-import com.project.store.vo.ProductVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +35,19 @@ public class CartController {
     private UserService userService;
 
     @ApiOperation(value = "加入收藏夹")
-    @PostMapping("/addCart/{productId}")
-    public boolean addCart(@PathVariable Integer productId) {
+    @PostMapping("/addCart/{productId}/{productType}")
+    public boolean addCart(@PathVariable Integer productId, @PathVariable ProductType productType) {
         Cart cart = new Cart();
         cart.setProductId(productId);
+        cart.setProductType(productType);
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         cart.setUserId(user.getUid());
-        return cartService.save(cart);
+        return cartService.saveOrUpdate(cart);
     }
 
     @ApiOperation(value = "获取收藏列表")
     @GetMapping("/findAll")
-    public List<Product> findAll() {
+    public List<Cart> findAll() {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         return cartService.findAllCartByUserId(user.getUid());
     }

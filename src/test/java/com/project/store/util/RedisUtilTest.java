@@ -12,6 +12,7 @@ import java.util.List;
 
 @SpringBootTest
 class RedisUtilTest {
+
     @Autowired
     RedisUtil redisUtil;
 

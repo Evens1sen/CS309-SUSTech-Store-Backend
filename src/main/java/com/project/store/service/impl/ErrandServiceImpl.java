@@ -57,6 +57,11 @@ public class ErrandServiceImpl extends ServiceImpl<ErrandMapper, Errand> impleme
             BeanUtils.copyProperties(errand, errandVO);
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
+            User buyer = userMapper.selectById(errand.getBuyerId());
+            if (buyer != null){
+                errandVO.setBuyerId(buyer.getUid());
+                errandVO.setBuyerNickname(buyer.getNickName());
+            }
             errandVOList.add(errandVO);
         }
 

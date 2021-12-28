@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,6 +68,31 @@ public class ErrandController {
         return errandService.list(wrapper);
     }
 
+    @ApiOperation(value = "获取用户已发布的跑腿VO")
+    @GetMapping("/listReleasedVO")
+    public List<ErrandVO> listReleasedVO() {
+        User owner = userService.getById(StpUtil.getLoginIdAsInt());
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
+        wrapper.eq("owner_id", owner.getUid());
+
+        List<Errand> errandList = errandService.list(wrapper);
+        List<ErrandVO> errandVOList = new ArrayList<>();
+        errandList.forEach(errand -> {
+            ErrandVO errandVO = new ErrandVO();
+            BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
+            errandVO.setOwnerNickname(owner.getNickName());
+            errandVO.setOwnerIcon(owner.getIcon());
+            User buyer = userService.getById(errand.getBuyerId());
+            if (buyer != null){
+                errandVO.setBuyerId(buyer.getUid());
+                errandVO.setBuyerNickname(buyer.getNickName());
+            }
+            errandVOList.add(errandVO);
+        });
+        return errandVOList;
+    }
+
     @ApiOperation(value = "获取用户已接取的跑腿")
     @GetMapping("/listTaken")
     public List<Errand> listTaken() {
@@ -74,6 +100,29 @@ public class ErrandController {
         QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("buyer_id", buyer.getUid());
         return errandService.list(wrapper);
+    }
+
+    @ApiOperation(value = "获取用户已接取的跑腿VO")
+    @GetMapping("/listTakenVO")
+    public List<ErrandVO> listTakenVO() {
+        User buyer = userService.getById(StpUtil.getLoginIdAsInt());
+        QueryWrapper<Errand> wrapper = new QueryWrapper<>();
+        wrapper.eq("buyer_id", buyer.getUid());
+
+        List<Errand> errandList = errandService.list(wrapper);
+        List<ErrandVO> errandVOList = new ArrayList<>();
+        errandList.forEach(errand -> {
+            ErrandVO errandVO = new ErrandVO();
+            User owner = userService.getById(errand.getOwnerId());
+            BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
+            errandVO.setOwnerNickname(owner.getNickName());
+            errandVO.setOwnerIcon(owner.getIcon());
+            errandVO.setBuyerId(buyer.getUid());
+            errandVO.setBuyerNickname(buyer.getNickName());
+            errandVOList.add(errandVO);
+        });
+        return errandVOList;
     }
 
     @ApiOperation(value = "根据id获取跑腿单")
@@ -89,8 +138,14 @@ public class ErrandController {
         ErrandVO errandVO = new ErrandVO();
         User owner = userService.getById(errand.getOwnerId());
         BeanUtils.copyProperties(errand, errandVO);
+        errandVO.setOwnerId(owner.getUid());
         errandVO.setOwnerNickname(owner.getNickName());
         errandVO.setOwnerIcon(owner.getIcon());
+        User buyer = userService.getById(errand.getBuyerId());
+        if (buyer != null){
+            errandVO.setBuyerId(buyer.getUid());
+            errandVO.setBuyerNickname(buyer.getNickName());
+        }
 
         return errandVO;
     }
@@ -114,6 +169,7 @@ public class ErrandController {
             return false;
         }
         user.setBalance(user.getBalance() - errand.getPrice());
+        userService.saveOrUpdate(user);
 
         errand.setOwnerId(user.getUid());
         errand.setStatus(ErrandStatus.OPENED);

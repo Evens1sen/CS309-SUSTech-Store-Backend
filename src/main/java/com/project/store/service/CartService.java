@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface CartService extends IService<Cart> {
 
-    List<Product> findAllCartByUserId(Integer id);
+    List<Cart> findAllCartByUserId(Integer id);
 
     List<CartVO> findAllCartVOByUserId(Integer id);
 }

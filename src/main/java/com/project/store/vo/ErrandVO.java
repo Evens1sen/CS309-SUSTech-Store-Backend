@@ -21,6 +21,12 @@ public class ErrandVO {
 
     private String destination;
 
+    private Integer buyerId;
+
+    private String buyerNickname;
+
+    private Integer ownerId;
+
     private String ownerNickname;
 
     private String ownerIcon;
@@ -28,6 +34,8 @@ public class ErrandVO {
     private ErrandType type;
 
     private String image;
+
+    private ErrandStatus status;
 
     private LocalDateTime createTime;
 

@@ -117,25 +117,31 @@ public class UserController {
     }
 
     @ApiOperation("踢人下线")
-    @GetMapping("/kickout/{uid}")
+    @PutMapping("/kickout/{uid}")
     public String kickout(@PathVariable Integer uid){
         StpUtil.kickout(uid);
         return "踢人成功";
     }
 
     @ApiOperation("封号")
-    @GetMapping("/disableUser/{uid}/{hour}")
+    @PutMapping("/disable/{uid}/{hour}")
     public String disableUser(@PathVariable Integer uid, @PathVariable Integer hour){
         StpUtil.kickout(uid);
         StpUtil.disable(uid, hour * 3600);
         return String.format("封禁用户%d, %d小时", uid, hour);
     }
 
-    @ApiOperation("封号")
-    @GetMapping("/untieDisableUser/{uid}")
+    @ApiOperation("解封")
+    @PutMapping("/untieDisable/{uid}")
     public String untieDisableUser(@PathVariable Integer uid){
         StpUtil.untieDisable(uid);
         return "解封成功";
+    }
+
+    @ApiOperation(value = "获取所有用户")
+    @GetMapping("/list")
+    public List<User> list() {
+        return userService.list();
     }
 
     @ApiOperation(value = "获取用户详细信息", notes = "根据uid来获取用户详细信息")
@@ -154,18 +160,18 @@ public class UserController {
     }
 
     @ApiOperation(value = "修改用户密码")
-    @PostMapping("/changePassword")
-    public boolean changePassword(@RequestBody String password){
+    @PostMapping("/changePassword/{password}")
+    public boolean changePassword(@PathVariable String password){
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         user.setPassword(SaSecureUtil.md5(password));
         return userService.saveOrUpdate(user);
     }
 
     @ApiOperation(value = "修改用户昵称")
-    @PostMapping("/changeNickname")
-    public boolean changeNickname(@RequestBody String nickname){
+    @PostMapping("/changeNickname/{nickName}")
+    public boolean changeNickname(@PathVariable String nickName){
         User user = userService.getById(StpUtil.getLoginIdAsInt());
-        user.setNickName(nickname);
+        user.setNickName(nickName);
         return userService.saveOrUpdate(user);
     }
 
@@ -209,6 +215,12 @@ public class UserController {
         String objectName = temp[temp.length - 1];
         ImageUtil.deleteImage(objectName);
         return userService.saveOrUpdate(user);
+    }
+
+    @ApiOperation("注销用户")
+    @DeleteMapping("deleteById/{uid}")
+    public boolean deleteById(@PathVariable Integer uid) {
+        return userService.removeById(uid);
     }
 }
 

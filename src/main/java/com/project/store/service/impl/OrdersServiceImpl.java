@@ -2,10 +2,12 @@ package com.project.store.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.project.store.entity.Cart;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.enums.OrdersStatus;
+import com.project.store.mapper.CartMapper;
 import com.project.store.mapper.OrdersMapper;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
@@ -38,6 +40,9 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private CartMapper cartMapper;
+
     @Override
     public Integer save(Product product, String useAddress, User user) {
         Orders orders = new Orders();
@@ -63,6 +68,15 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
 
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
         wrapper.eq("serialnumber", seriaNumber);
+
+        QueryWrapper<Cart> wrapper2 = new QueryWrapper<>();
+        wrapper2.eq("user_id", orders.getBuyerId());
+        wrapper2.eq("product_id", orders.getProductId());
+        Cart cart = cartMapper.selectOne(wrapper2);
+        if (cart != null) {
+            cartMapper.deleteById(cart.getId());
+        }
+
         return ordersMapper.selectOne(wrapper).getId();
     }
 
@@ -74,10 +88,13 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         User buyer = userMapper.selectById(orders.getBuyerId());
         User owner = userMapper.selectById(product.getOwnerId());
         ordersVO.setId(orders.getId());
+        ordersVO.setBuyerId(buyer.getUid());
         ordersVO.setBuyerNickName(buyer.getNickName());
+        ordersVO.setSellerId(owner.getUid());
         ordersVO.setSellerNickName(owner.getNickName());
         ordersVO.setProductName(product.getName());
         ordersVO.setProductId(product.getId());
+        ordersVO.setProductType(product.getType());
         ordersVO.setImage(product.getImage());
         ordersVO.setCost(orders.getCost());
         ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -85,13 +102,14 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         ordersVO.setCreateTime(orders.getCreateTime());
         ordersVO.setExpireTime(orders.getCreateTime().plusHours(1));
 
+
         return ordersVO;
     }
 
     @Override
     public List<OrdersVO> findAllOrdersVOByBuyerID(Integer id) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.orderByDesc("update_time");
+        wrapper.orderByDesc("create_time");
         wrapper.eq("buyer_id", id);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);
         List<OrdersVO> ordersVOList = new ArrayList<>();
@@ -101,10 +119,13 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             User buyer = userMapper.selectById(id);
             User owner = userMapper.selectById(product.getOwnerId());
             ordersVO.setId(orders.getId());
+            ordersVO.setBuyerId(buyer.getUid());
             ordersVO.setBuyerNickName(buyer.getNickName());
+            ordersVO.setSellerId(owner.getUid());
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
             ordersVO.setProductId(product.getId());
+            ordersVO.setProductType(product.getType());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -120,7 +141,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     @Override
     public List<OrdersVO> findAllOrdersVOByOwnerID(Integer ownerId) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.orderByDesc("update_time");
+        wrapper.orderByDesc("create_time");
         wrapper.eq("owner_id", ownerId);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);
         List<OrdersVO> ordersVOList = new ArrayList<>();
@@ -130,10 +151,13 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             User buyer = userMapper.selectById(orders.getBuyerId());
             User owner = userMapper.selectById(orders.getOwnerId());
             ordersVO.setId(orders.getId());
+            ordersVO.setBuyerId(buyer.getUid());
             ordersVO.setBuyerNickName(buyer.getNickName());
+            ordersVO.setSellerId(owner.getUid());
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
             ordersVO.setProductId(product.getId());
+            ordersVO.setProductType(product.getType());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());

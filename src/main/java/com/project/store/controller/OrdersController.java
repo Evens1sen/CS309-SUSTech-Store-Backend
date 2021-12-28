@@ -108,14 +108,6 @@ public class OrdersController {
             Product product = productService.getById(orders.getProductId());
             product.setStatus(ProductStatus.SOLD);
 
-            QueryWrapper<Cart> wrapper2 = new QueryWrapper<>();
-            wrapper2.eq("user_id", orders.getBuyerId());
-            wrapper2.eq("product_id", orders.getProductId());
-            Cart cart = cartService.getOne(wrapper2);
-            if (cart != null) {
-                cartService.removeById(cart.getId());
-            }
-
             return productService.saveOrUpdate(product);
         }
         return false;

@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
 
+import com.project.store.enums.ProductType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -33,6 +34,8 @@ public class Cart implements Serializable {
     private Integer id;
 
     private Integer productId;
+
+    private ProductType productType;
 
     private Integer quantity;
 
