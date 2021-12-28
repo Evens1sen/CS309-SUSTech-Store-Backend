@@ -9,8 +9,11 @@ import com.project.store.dto.ResultCode;
 import com.project.store.dto.UserLoginParam;
 import com.project.store.dto.UserRegisterParam;
 import com.project.store.entity.User;
+import com.project.store.service.ProductService;
 import com.project.store.service.UserService;
 import com.project.store.util.ImageUtil;
+import com.project.store.util.RedisUtil;
+import com.project.store.vo.ProductVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +40,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @ApiOperation(value = "注册")
     @PostMapping("/register")
@@ -83,6 +92,14 @@ public class UserController {
             return new Result<>(ResultCode.WRONG_PASSWORD, null);
         }
         StpUtil.login(user.getUid());
+
+        List<ProductVO> productVOList = productService.loadProductVOCache();
+        for(int i =0;i<32;i++){
+            ProductVO p = productVOList.get(i);
+            redisUtil.set(p.getId().toString(),p);
+            System.out.println(redisUtil.hasKey(p.getId().toString()));
+        }
+
         return new Result<>(StpUtil.getTokenInfo());
     }
 

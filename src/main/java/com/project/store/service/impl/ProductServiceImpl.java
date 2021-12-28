@@ -3,6 +3,8 @@ package com.project.store.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.project.store.StoreApplication;
+import com.project.store.config.MyRedisConfig;
 import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
@@ -10,10 +12,12 @@ import com.project.store.enums.ProductType;
 import com.project.store.mapper.ProductMapper;
 import com.project.store.mapper.UserMapper;
 import com.project.store.service.ProductService;
+import com.project.store.util.RedisUtil;
 import com.project.store.vo.ProductVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +38,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public List<Product> findByCategoryId(Integer level, Integer categoryId) {
@@ -73,21 +80,44 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             BeanUtils.copyProperties(owner, productVO);
             productVOList.add(productVO);
         }
-
         return productVOList;
     }
 
     @Override
     public ProductVO findProductVOById(Integer id) {
         ProductVO productVO = new ProductVO();
-        Product product = productMapper.selectById(id);
-        User owner = userMapper.selectById(product.getOwnerId());
-        BeanUtils.copyProperties(product, productVO);
-        BeanUtils.copyProperties(owner, productVO);
+        if (redisUtil.hasKey(id.toString())) {
+            productVO = (ProductVO) redisUtil.get(id.toString());
+            System.out.println();
+        } else {
+            Product product = productMapper.selectById(id);
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+        }
+
         return productVO;
     }
 
+    @Override
     public List<ProductVO> findAllProductVO() {
+        List<ProductVO> productVOList = new ArrayList<>();
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("update_time");
+        wrapper.eq("status", 0);
+        List<Product> productList = productMapper.selectList(wrapper);
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userMapper.selectById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+        return productVOList;
+    }
+
+    @Override
+    public List<ProductVO> loadProductVOCache() {
         List<ProductVO> productVOList = new ArrayList<>();
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
@@ -106,13 +136,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public List<ProductVO> findProductVOPage(Integer pageNum, Integer pageSize) {
+        List<ProductVO> productVOList = new ArrayList<>();
         Page<Product> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
         wrapper.eq("status", 0);
         productMapper.selectPage(page, wrapper);
-
-        List<ProductVO> productVOList = new ArrayList<>();
         List<Product> productList = page.getRecords();
         for (Product product : productList) {
             ProductVO productVO = new ProductVO();
@@ -121,9 +150,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             BeanUtils.copyProperties(owner, productVO);
             productVOList.add(productVO);
         }
-
         return productVOList;
     }
+
 
     @Override
     public List<ProductVO> searchAllProductVOPage(SearchFilter searchFilter, Integer pageNum, Integer pageSize) {
@@ -180,8 +209,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             BeanUtils.copyProperties(owner, productVO);
             productVOList.add(productVO);
         }
-
         return productVOList;
     }
-
 }

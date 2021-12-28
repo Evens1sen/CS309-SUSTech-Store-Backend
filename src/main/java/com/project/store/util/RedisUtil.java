@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisUtil {
     @Autowired
-    RedisTemplate redisTemplate;   //key-value是对象的
+    RedisTemplate redisTemplate;
 
     //判断是否存在key
     public boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
     //从redis中获取值
