@@ -85,7 +85,7 @@ public class UserController {
         if (user == null) {
             return new Result<>(ResultCode.UNREGISTERED, null);
         }
-        if (StpUtil.isDisable(user.getUid())){
+        if (StpUtil.isDisable(user.getUid())) {
             return new Result<>(ResultCode.DISABLED, null);
         }
         if (!Objects.equals(user.getPassword(), SaSecureUtil.md5(userLoginParam.getPassword()))) {
@@ -94,10 +94,14 @@ public class UserController {
         StpUtil.login(user.getUid());
 
         List<ProductVO> productVOList = productService.loadProductVOCache();
-        for(int i =0;i<32;i++){
+        int count = 0;
+        for (int i = 0; i < productVOList.size(); i++) {
+            if (count == 32) {
+                break;
+            }
             ProductVO p = productVOList.get(i);
-            redisUtil.set(p.getId().toString(),p);
-            System.out.println(redisUtil.hasKey(p.getId().toString()));
+            redisUtil.set(p.getId().toString(), p);
+            count++;
         }
 
         return new Result<>(StpUtil.getTokenInfo());
@@ -118,14 +122,14 @@ public class UserController {
 
     @ApiOperation("踢人下线")
     @PutMapping("/kickout/{uid}")
-    public String kickout(@PathVariable Integer uid){
+    public String kickout(@PathVariable Integer uid) {
         StpUtil.kickout(uid);
         return "踢人成功";
     }
 
     @ApiOperation("封号")
     @PutMapping("/disable/{uid}/{hour}")
-    public String disableUser(@PathVariable Integer uid, @PathVariable Integer hour){
+    public String disableUser(@PathVariable Integer uid, @PathVariable Integer hour) {
         StpUtil.kickout(uid);
         StpUtil.disable(uid, hour * 3600);
         return String.format("封禁用户%d, %d小时", uid, hour);
@@ -133,7 +137,7 @@ public class UserController {
 
     @ApiOperation("解封")
     @PutMapping("/untieDisable/{uid}")
-    public String untieDisableUser(@PathVariable Integer uid){
+    public String untieDisableUser(@PathVariable Integer uid) {
         StpUtil.untieDisable(uid);
         return "解封成功";
     }
@@ -161,7 +165,7 @@ public class UserController {
 
     @ApiOperation(value = "修改用户密码")
     @PostMapping("/changePassword/{password}")
-    public boolean changePassword(@PathVariable String password){
+    public boolean changePassword(@PathVariable String password) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         user.setPassword(SaSecureUtil.md5(password));
         return userService.saveOrUpdate(user);
@@ -169,7 +173,7 @@ public class UserController {
 
     @ApiOperation(value = "修改用户昵称")
     @PostMapping("/changeNickname/{nickName}")
-    public boolean changeNickname(@PathVariable String nickName){
+    public boolean changeNickname(@PathVariable String nickName) {
         User user = userService.getById(StpUtil.getLoginIdAsInt());
         user.setNickName(nickName);
         return userService.saveOrUpdate(user);
