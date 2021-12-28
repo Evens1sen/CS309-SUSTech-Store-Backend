@@ -3,8 +3,6 @@ package com.project.store.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.project.store.StoreApplication;
-import com.project.store.config.MyRedisConfig;
 import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
@@ -17,9 +15,11 @@ import com.project.store.vo.ProductVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
