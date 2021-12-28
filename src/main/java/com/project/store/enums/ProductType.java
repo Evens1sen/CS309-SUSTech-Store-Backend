@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 public enum ProductType {
     SELL(0, "For sell"),
-    BUY(1, "To buy");
+    BUY(1, "To buy"),
+    SEARCH_ALL(2, "Search all");
 
     @EnumValue
     int code;

@@ -80,8 +80,14 @@ public class ErrandController {
         errandList.forEach(errand -> {
             ErrandVO errandVO = new ErrandVO();
             BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
+            User buyer = userService.getById(errand.getBuyerId());
+            if (buyer != null){
+                errandVO.setBuyerId(buyer.getUid());
+                errandVO.setBuyerNickname(buyer.getNickName());
+            }
             errandVOList.add(errandVO);
         });
         return errandVOList;
@@ -109,8 +115,11 @@ public class ErrandController {
             ErrandVO errandVO = new ErrandVO();
             User owner = userService.getById(errand.getOwnerId());
             BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
+            errandVO.setBuyerId(buyer.getUid());
+            errandVO.setBuyerNickname(buyer.getNickName());
             errandVOList.add(errandVO);
         });
         return errandVOList;
@@ -129,8 +138,14 @@ public class ErrandController {
         ErrandVO errandVO = new ErrandVO();
         User owner = userService.getById(errand.getOwnerId());
         BeanUtils.copyProperties(errand, errandVO);
+        errandVO.setOwnerId(owner.getUid());
         errandVO.setOwnerNickname(owner.getNickName());
         errandVO.setOwnerIcon(owner.getIcon());
+        User buyer = userService.getById(errand.getBuyerId());
+        if (buyer != null){
+            errandVO.setBuyerId(buyer.getUid());
+            errandVO.setBuyerNickname(buyer.getNickName());
+        }
 
         return errandVO;
     }
@@ -154,6 +169,7 @@ public class ErrandController {
             return false;
         }
         user.setBalance(user.getBalance() - errand.getPrice());
+        userService.saveOrUpdate(user);
 
         errand.setOwnerId(user.getUid());
         errand.setStatus(ErrandStatus.OPENED);

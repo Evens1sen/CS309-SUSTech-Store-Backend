@@ -24,13 +24,14 @@ DROP TABLE IF EXISTS `cart`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart`
 (
-    `id`          int      NOT NULL AUTO_INCREMENT,
-    `product_id`  int DEFAULT NULL,
-    `quantity`    int DEFAULT NULL,
-    `cost`        int DEFAULT NULL,
-    `user_id`     int DEFAULT NULL,
-    `create_time` datetime NOT NULL,
-    `update_time` datetime NOT NULL,
+    `id`           int      NOT NULL AUTO_INCREMENT,
+    `product_id`   int DEFAULT NULL,
+    `product_type` int      not null,
+    `quantity`     int DEFAULT NULL,
+    `cost`         int DEFAULT NULL,
+    `user_id`      int DEFAULT NULL,
+    `create_time`  datetime NOT NULL,
+    `update_time`  datetime NOT NULL,
     PRIMARY KEY (`id`),
     KEY `productId` (`product_id`),
     KEY `userId` (`user_id`),

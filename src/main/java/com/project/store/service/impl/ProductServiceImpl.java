@@ -143,10 +143,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             wrapper.ge("price", searchFilter.getMinPrice());
         }
 
-        if (searchFilter.getProductType() == ProductType.BUY){
-            wrapper.eq("type", 1);
-        }else {
-            wrapper.eq("type", 0);
+        if (searchFilter.getProductType() != ProductType.SEARCH_ALL){
+            wrapper.eq("type", searchFilter.getProductType().getCode());
         }
 
         List<Product> productList = productMapper.selectList(wrapper);
@@ -162,7 +160,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 ).collect(Collectors.toList());
             } else {
                 productList = productList.stream().filter(p ->
-                        userMapper.selectById(p.getOwnerId()).getCredit() >= 50
+                        userMapper.selectById(p.getOwnerId()).getCredit() >= 0
                 ).collect(Collectors.toList());
             }
         }

@@ -94,6 +94,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         ordersVO.setSellerNickName(owner.getNickName());
         ordersVO.setProductName(product.getName());
         ordersVO.setProductId(product.getId());
+        ordersVO.setProductType(product.getType());
         ordersVO.setImage(product.getImage());
         ordersVO.setCost(orders.getCost());
         ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -108,7 +109,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     @Override
     public List<OrdersVO> findAllOrdersVOByBuyerID(Integer id) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.orderByDesc("update_time");
+        wrapper.orderByDesc("create_time");
         wrapper.eq("buyer_id", id);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);
         List<OrdersVO> ordersVOList = new ArrayList<>();
@@ -124,6 +125,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
             ordersVO.setProductId(product.getId());
+            ordersVO.setProductType(product.getType());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());
@@ -139,7 +141,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     @Override
     public List<OrdersVO> findAllOrdersVOByOwnerID(Integer ownerId) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.orderByDesc("update_time");
+        wrapper.orderByDesc("create_time");
         wrapper.eq("owner_id", ownerId);
         List<Orders> ordersList = ordersMapper.selectList(wrapper);
         List<OrdersVO> ordersVOList = new ArrayList<>();
@@ -155,6 +157,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             ordersVO.setSellerNickName(owner.getNickName());
             ordersVO.setProductName(product.getName());
             ordersVO.setProductId(product.getId());
+            ordersVO.setProductType(product.getType());
             ordersVO.setImage(product.getImage());
             ordersVO.setCost(orders.getCost());
             ordersVO.setSerialnumber(orders.getSerialnumber());

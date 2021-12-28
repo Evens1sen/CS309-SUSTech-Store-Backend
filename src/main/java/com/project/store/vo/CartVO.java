@@ -1,5 +1,6 @@
 package com.project.store.vo;
 
+import com.project.store.enums.ProductType;
 import lombok.Data;
 
 @Data
@@ -7,6 +8,8 @@ public class CartVO {
     private Integer id;
 
     private Integer productId;
+
+    private ProductType productType;
 
     private String name;
 

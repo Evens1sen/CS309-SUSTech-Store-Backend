@@ -1,6 +1,7 @@
 package com.project.store.vo;
 
 import com.project.store.enums.OrdersStatus;
+import com.project.store.enums.ProductType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ public class OrdersVO {
     private String productName;
 
     private Integer productId;
+
+    private ProductType productType;
 
     private String image;
 

@@ -38,15 +38,15 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     private UserMapper userMapper;
 
     @Override
-    public List<Product> findAllCartByUserId(Integer id) {
-        QueryWrapper wrapper = new QueryWrapper();
+    public List<Cart> findAllCartByUserId(Integer id) {
+        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", id);
         return cartMapper.selectList(wrapper);
     }
 
     @Override
     public List<CartVO> findAllCartVOByUserId(Integer id) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("update_time");
         wrapper.eq("user_id", id);
         List<Cart> cartList = cartMapper.selectList(wrapper);
@@ -59,6 +59,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             BeanUtils.copyProperties(owner, cartVO);
             cartVO.setId(cart.getId());
             cartVO.setProductId(cart.getProductId());
+            cartVO.setProductType(product.getType());
             cartVOList.add(cartVO);
         }
 

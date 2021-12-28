@@ -18,5 +18,5 @@ public class SearchFilter {
 
     private Integer categoryId;
 
-    private ProductType productType = ProductType.SELL;
+    private ProductType productType = ProductType.SEARCH_ALL;
 }
