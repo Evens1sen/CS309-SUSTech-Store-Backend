@@ -88,7 +88,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         ProductVO productVO = new ProductVO();
         if (redisUtil.hasKey(id.toString())) {
             productVO = (ProductVO) redisUtil.get(id.toString());
-            System.out.println();
         } else {
             Product product = productMapper.selectById(id);
             User owner = userMapper.selectById(product.getOwnerId());
