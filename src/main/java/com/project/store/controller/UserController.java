@@ -95,12 +95,11 @@ public class UserController {
 
         List<ProductVO> productVOList = productService.loadProductVOCache();
         int count = 0;
-        for (int i = 0; i < productVOList.size(); i++) {
+        for (ProductVO productVO : productVOList) {
             if (count == 32) {
                 break;
             }
-            ProductVO p = productVOList.get(i);
-            redisUtil.set(p.getId().toString(), p);
+            redisUtil.set(productVO.getId().toString(), productVO);
             count++;
         }
 

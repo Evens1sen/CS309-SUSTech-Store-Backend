@@ -52,11 +52,27 @@ public class ErrandController {
 
     @ApiOperation(value = "获取所有分类列表")
     @GetMapping("/list/{type}")
-    public List<Errand> listByType(@PathVariable Integer type) {
+    public List<ErrandVO> listByType(@PathVariable Integer type) {
         QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.eq("type", type);
         wrapper.eq("status", 0);
-        return errandService.list(wrapper);
+        List<Errand> errandList = errandService.list(wrapper);
+        List<ErrandVO> errandVOList = new ArrayList<>();
+        errandList.forEach(errand -> {
+            ErrandVO errandVO = new ErrandVO();
+            User owner = userService.getById(errand.getOwnerId());
+            BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
+            errandVO.setOwnerNickname(owner.getNickName());
+            errandVO.setOwnerIcon(owner.getIcon());
+            User buyer = userService.getById(errand.getBuyerId());
+            if (buyer != null){
+                errandVO.setBuyerId(buyer.getUid());
+                errandVO.setBuyerNickname(buyer.getNickName());
+            }
+            errandVOList.add(errandVO);
+        });
+        return errandVOList;
     }
 
     @ApiOperation(value = "获取用户已发布的跑腿")
@@ -150,15 +166,31 @@ public class ErrandController {
         return errandVO;
     }
 
-    @ApiOperation(value = "搜索跑腿", notes = "默认按时间排序")
+    @ApiOperation(value = "搜索跑腿VO", notes = "默认按时间排序")
     @GetMapping("/search/{key}")
-    public List<Errand> search(@PathVariable String key) {
+    public List<ErrandVO> search(@PathVariable String key) {
         QueryWrapper<Errand> wrapper = new QueryWrapper<>();
         wrapper.like("name", key);
         wrapper.eq("status", 0);
         wrapper.orderByDesc("update_time");
 
-        return errandService.list(wrapper);
+        List<Errand> errandList = errandService.list(wrapper);
+        List<ErrandVO> errandVOList = new ArrayList<>();
+        errandList.forEach(errand -> {
+            ErrandVO errandVO = new ErrandVO();
+            User owner = userService.getById(errand.getOwnerId());
+            BeanUtils.copyProperties(errand, errandVO);
+            errandVO.setOwnerId(owner.getUid());
+            errandVO.setOwnerNickname(owner.getNickName());
+            errandVO.setOwnerIcon(owner.getIcon());
+            User buyer = userService.getById(errand.getBuyerId());
+            if (buyer != null){
+                errandVO.setBuyerId(buyer.getUid());
+                errandVO.setBuyerNickname(buyer.getNickName());
+            }
+            errandVOList.add(errandVO);
+        });
+        return errandVOList;
     }
 
     @ApiOperation(value = "添加跑腿")
