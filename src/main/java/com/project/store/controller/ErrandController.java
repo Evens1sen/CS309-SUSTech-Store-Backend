@@ -66,7 +66,7 @@ public class ErrandController {
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
             User buyer = userService.getById(errand.getBuyerId());
-            if (buyer != null){
+            if (buyer != null) {
                 errandVO.setBuyerId(buyer.getUid());
                 errandVO.setBuyerNickname(buyer.getNickName());
             }
@@ -100,7 +100,7 @@ public class ErrandController {
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
             User buyer = userService.getById(errand.getBuyerId());
-            if (buyer != null){
+            if (buyer != null) {
                 errandVO.setBuyerId(buyer.getUid());
                 errandVO.setBuyerNickname(buyer.getNickName());
             }
@@ -158,7 +158,7 @@ public class ErrandController {
         errandVO.setOwnerNickname(owner.getNickName());
         errandVO.setOwnerIcon(owner.getIcon());
         User buyer = userService.getById(errand.getBuyerId());
-        if (buyer != null){
+        if (buyer != null) {
             errandVO.setBuyerId(buyer.getUid());
             errandVO.setBuyerNickname(buyer.getNickName());
         }
@@ -184,7 +184,7 @@ public class ErrandController {
             errandVO.setOwnerNickname(owner.getNickName());
             errandVO.setOwnerIcon(owner.getIcon());
             User buyer = userService.getById(errand.getBuyerId());
-            if (buyer != null){
+            if (buyer != null) {
                 errandVO.setBuyerId(buyer.getUid());
                 errandVO.setBuyerNickname(buyer.getNickName());
             }
@@ -206,7 +206,6 @@ public class ErrandController {
         errand.setOwnerId(user.getUid());
         errand.setStatus(ErrandStatus.OPENED);
         errand.setBuyerId(null);
-
 
         if (!Objects.equals(errand.getImage(), "")) {
             String objectName = ImageUtil.generateObjectName(errand.getId().toString(), 8);
@@ -232,8 +231,9 @@ public class ErrandController {
     public boolean confirm(@PathVariable Integer id) {
         Errand errand = errandService.getById(id);
         errand.setStatus(ErrandStatus.CLOSED);
-        User buyer = userService.getById(StpUtil.getLoginIdAsInt());
+        User buyer = userService.getById(errand.getBuyerId());
         buyer.setBalance(buyer.getBalance() + errand.getPrice());
+        userService.saveOrUpdate(buyer);
 
         return errandService.saveOrUpdate(errand);
     }

@@ -4,12 +4,12 @@ package com.project.store.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.project.store.entity.Cart;
 import com.project.store.entity.Orders;
 import com.project.store.entity.Product;
 import com.project.store.entity.User;
 import com.project.store.enums.OrdersStatus;
 import com.project.store.enums.ProductStatus;
+import com.project.store.enums.ProductType;
 import com.project.store.service.CartService;
 import com.project.store.service.OrdersService;
 import com.project.store.service.ProductService;
@@ -59,10 +59,17 @@ public class OrdersController {
     @ApiOperation(value = "用户支付订单，订单状态改变为1", notes = "仅对用户扣款")
     @PutMapping("/payById/{id}")
     public boolean payById(@PathVariable Integer id) {
-        User user = userService.getById(StpUtil.getLoginIdAsInt());
         Orders orders = ordersService.getById(id);
+        User buyer = userService.getById(orders.getBuyerId());
+        User owner = userService.getById(orders.getOwnerId());
         Product product = productService.getById(orders.getProductId());
-        boolean result = userService.pay(user.getUid(), orders.getCost());
+        boolean result;
+        if (product.getType() == ProductType.SELL) {
+            result = userService.pay(buyer.getUid(), orders.getCost());
+        } else {
+            result = userService.pay(owner.getUid(), orders.getCost());
+        }
+
         if (!result) {
             return false;
         }
@@ -72,9 +79,7 @@ public class OrdersController {
         product.setStatus(ProductStatus.SOLD);
         productService.saveOrUpdate(product);
 
-        User owner = userService.getById(orders.getOwnerId());
         userService.sendNotification(owner.getEmail());
-
         return true;
     }
 
@@ -101,12 +106,17 @@ public class OrdersController {
             wrapper.eq("id", id);
             ordersService.update(wrapper);
 
-            User owner = userService.getById(orders.getOwnerId());
-            owner.setBalance(owner.getBalance() + orders.getCost());
-            userService.saveOrUpdate(owner);
-
             Product product = productService.getById(orders.getProductId());
             product.setStatus(ProductStatus.SOLD);
+
+            User user;
+            if (product.getType() == ProductType.SELL) {
+                user = userService.getById(orders.getOwnerId());
+            } else {
+                user = userService.getById(orders.getBuyerId());
+            }
+            user.setBalance(user.getBalance() + orders.getCost());
+            userService.saveOrUpdate(user);
 
             return productService.saveOrUpdate(product);
         }
