@@ -54,7 +54,7 @@ public class UserController {
         user.setUid(userRegisterParam.getUid());
         user.setPassword(SaSecureUtil.md5(userRegisterParam.getPassword()));
         user.setNickName(userRegisterParam.getNickName());
-        user.setEmail(userRegisterParam.getEmail());
+        user.setEmail(user.getUid().toString() + "@mail.sustech.edu.cn");
         user.setCredit(100);
 
         boolean result;

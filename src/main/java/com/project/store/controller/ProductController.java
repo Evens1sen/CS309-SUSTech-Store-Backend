@@ -2,6 +2,7 @@ package com.project.store.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.project.store.dto.ProductDto;
 import com.project.store.dto.SearchFilter;
 import com.project.store.entity.Product;
@@ -21,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,6 +91,39 @@ public class ProductController {
     @PostMapping("/search/{pageNum}/{pageSize}")
     public List<ProductVO> search(@RequestBody SearchFilter searchFilter, @PathVariable Integer pageNum, @PathVariable Integer pageSize) {
         return productService.searchAllProductVOPage(searchFilter, pageNum, pageSize);
+    }
+
+    @ApiOperation(value = "获取3个相关商品VO", notes = "默认按时间排序")
+    @GetMapping("/findRelated/{productId}")
+    public List<ProductVO> findRelated(@PathVariable Integer productId){
+        Product current = productService.getById(productId);
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
+        wrapper.eq("categorylevelone_id", current.getCategoryleveloneId());
+        wrapper.eq("status", 0);
+        wrapper.orderByDesc("update_time");
+        wrapper.last("limit 3");
+
+        List<Product> productList = productService.list(wrapper);
+        List<ProductVO> productVOList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductVO productVO = new ProductVO();
+            User owner = userService.getById(product.getOwnerId());
+            BeanUtils.copyProperties(product, productVO);
+            BeanUtils.copyProperties(owner, productVO);
+            productVOList.add(productVO);
+        }
+        if (productList.size() == 0){
+           productVOList.add(new ProductVO());
+           productVOList.add(new ProductVO());
+           productVOList.add(new ProductVO());
+        }else if (productList.size() == 1){
+            productVOList.add(new ProductVO());
+            productVOList.add(new ProductVO());
+        }else if (productList.size() == 2){
+            productVOList.add(new ProductVO());
+        }
+
+        return productVOList;
     }
 
     @ApiOperation(value = "添加商品")
