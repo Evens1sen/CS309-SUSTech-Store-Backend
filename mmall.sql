@@ -178,6 +178,9 @@ CREATE TABLE `product`
   DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO `product`
+VALUES (750, 'test', '', 152, 11911001, 1, 0, 0, 'baby_1.jpg', 0, 0, '2021-11-22 21:00:00', '2021-11-22 21:00:00');
+
 --
 -- Dumping data for table `product`
 --

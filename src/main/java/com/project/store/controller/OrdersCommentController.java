@@ -35,7 +35,6 @@ public class OrdersCommentController {
     private OrdersService ordersService;
 
 
-
     @ApiOperation(value = "获取用户信誉/{id}")
     @GetMapping("/getOrdersComment/{id}")
     public int getOrdersComment(@PathVariable Integer id) {
@@ -51,7 +50,7 @@ public class OrdersCommentController {
     }
 
 
-    @ApiOperation(value = "对订单进行评价同时更新信誉")
+    @ApiOperation(value = "对订单进行评价同时更新信誉， 订单状态为4")
     @PostMapping("commentOrders/{orders_id}/{sell_id}/{comment}/{star}")
     public boolean commentOrders(@PathVariable Integer orders_id, @PathVariable Integer sell_id, @PathVariable String comment, @PathVariable Double star) {
         // 买家每完成一次订单， 给他加100分
@@ -75,7 +74,7 @@ public class OrdersCommentController {
             orders.setStatus(OrdersStatus.CLOSED);
             ordersService.saveOrUpdate(orders);
             return ordersCommentService.save(ordersComment);
-        }else {
+        } else {
             return false;
         }
     }

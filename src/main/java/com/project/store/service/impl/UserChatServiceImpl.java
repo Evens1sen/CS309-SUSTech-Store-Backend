@@ -33,9 +33,9 @@ public class UserChatServiceImpl extends ServiceImpl<UserChatMapper, UserChat> i
         wrapper.eq("buy_id", buy_id);
         wrapper.eq("sell_id", sell_id);
         wrapper.orderByDesc("create_at");
-        wrapper.eq("buy_id", sell_id);
-        wrapper.eq("sell_id", buy_id);
-        wrapper.orderByDesc("create_at");
+        wrapper2.eq("buy_id", sell_id);
+        wrapper2.eq("sell_id", buy_id);
+        wrapper2.orderByDesc("create_at");
         List<UserChat> list = userChatMapper.selectList(wrapper);
         List<UserChat> list2 = userChatMapper.selectList(wrapper2);
         list.addAll(list2);
